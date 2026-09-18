@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>阵图入门：Python 与 JavaScript 的召唤咒语 · 青云志</title>
+<meta name="description" content="修仙界亦有代码。以 Python 布阵、以 JavaScript 唤灵，各有一段入门咒语，附注释以示后人。">
+<link rel="canonical" href="https://wsn-star.github.io/posts/%E9%98%B5%E5%9B%BE%E5%85%A5%E9%97%A8/"><meta name="generator" content="post-generator v0.1.0">
+<meta name="theme-color" content="#141c21">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "author": {"@type": "Person", "name": "\u65e0\u540d\u6563\u4fee"}, "dateModified": "2026-09-15T00:00:00-04:00", "datePublished": "2026-09-15T00:00:00-04:00", "description": "\u4fee\u4ed9\u754c\u4ea6\u6709\u4ee3\u7801\u3002\u4ee5 Python \u5e03\u9635\u3001\u4ee5 JavaScript \u5524\u7075\uff0c\u5404\u6709\u4e00\u6bb5\u5165\u95e8\u5492\u8bed\uff0c\u9644\u6ce8\u91ca\u4ee5\u793a\u540e\u4eba\u3002", "headline": "\u9635\u56fe\u5165\u95e8\uff1aPython \u4e0e JavaScript \u7684\u53ec\u5524\u5492\u8bed", "keywords": "\u4ee3\u7801\uff0c\u4fee\u884c\uff0c\u9635\u6cd5", "mainEntityOfPage": "https://wsn-star.github.io/posts/%E9%98%B5%E5%9B%BE%E5%85%A5%E9%97%A8/"}</script><link rel="stylesheet" href="assets/css/xianxia.css">
+<link rel="stylesheet" href="assets/css/blog.css">
+<script>document.documentElement.dataset.theme = localStorage.getItem('xianxia-theme') || 'light';
+window.BLOG_ROOT = "";</script>
+</head>
+<body class="xianxia">
+<svg class="deco-svg" aria-hidden="true"><defs>
+  <symbol id="cloud-symbol" viewBox="0 0 48 16">
+    <path d="M24 2c-3.2 0-5.8 2-6.9 4.8C13.9 6.2 11 8.4 11 11.2 11 14 13.4 16 16.4 16h15.2c3 0 5.4-2 5.4-4.8 0-2.8-2.9-5-6.1-5.2C29.8 3.4 27.2 2 24 2z" fill="currentColor" opacity=".55"/>
+    <circle cx="38" cy="6" r="4.5" fill="currentColor" opacity=".3"/>
+    <circle cx="8" cy="10" r="3" fill="currentColor" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <nav class="nav-bar" aria-label="主导航">
+    <a class="brand" href="/">青云志</a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="site-menu" aria-label="打开菜单">☰</button>
+    <ul class="site-menu" id="site-menu">
+      <li><a href="/">首页</a></li>
+      <li><a href="/archives/">归档</a></li>
+      <li><a href="/tags/">标签</a></li>
+<li><a href="/关于/">关于</a></li>      <li><a href="/rss.xml">订阅</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button id="search-open" class="icon-btn" aria-label="搜索" aria-haspopup="dialog">🔍</button>
+      <button id="theme-toggle" class="icon-btn" aria-label="切换明暗主题" title="切换明暗">🌙</button>
+    </div>
+  </nav>
+</header>
+<main id="main" class="container">
+<article class="post">
+  <header class="post-head">
+    <p class="post-route"><a href="/">首页</a> › <a href="/tags/">标签</a> › <a href="/archives/">归档</a></p>
+    <h1 class="post-title">阵图入门：Python 与 JavaScript 的召唤咒语</h1>
+    <div class="post-meta">
+      <time datetime="2026-09-15">2026年09月15日</time>
+      <span>约 1 分钟</span>
+<span>无名散修</span>    </div>
+    <ul class="tag-list" aria-label="标签">
+<li><a class="tag" href="/tags/代码/">代码</a></li><li><a class="tag" href="/tags/修行/">修行</a></li><li><a class="tag" href="/tags/阵法/">阵法</a></li>    </ul>
+  </header>
+  <div class="post-layout">
+    <div class="post-body prose">
+      <blockquote>
+<p>阵图者，代码之形也；代码者，阵图之魂也。</p>
+</blockquote>
+<!-- more -->
+
+<h2 id="一python御剑飞行矩阵">一、Python：御剑飞行矩阵</h2>
+<p>Python 布阵，讲究一气呵成。此阵可将剑气化为数组，一息千里：</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">fly_sword</span><span class="p">(</span><span class="n">points</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">"""将剑气按仙力矩阵归一化，供御剑飞行使用。"""</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">points</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"剑气不能为空"</span><span class="p">)</span>
+
+    <span class="n">xs</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">points</span><span class="p">]</span>
+    <span class="n">ys</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">points</span><span class="p">]</span>
+    <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">xs</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
+    <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ys</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">ys</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">norm</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">lo</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">hi</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">lo</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">hi</span> <span class="o">-</span> <span class="n">lo</span><span class="p">)</span> <span class="k">if</span> <span class="n">hi</span> <span class="o">&gt;</span> <span class="n">lo</span> <span class="k">else</span> <span class="mf">0.0</span>
+
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">),</span> <span class="n">norm</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">points</span>
+    <span class="p">]</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">trail</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">60</span><span class="p">)]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">fly_sword</span><span class="p">(</span><span class="n">trail</span><span class="p">))</span>  <span class="c1"># [(0.0, 0.0), (0.33, 0.33), (1.0, 1.0)]</span>
+</code></pre></div>
+
+<p>要点：<code>list[tuple[...]]</code> 注解、列表推导式、<code>if __name__ == "__main__"</code>，皆是御剑飞行的基本功。</p>
+<h2 id="二javascript召唤灵兽的符咒">二、JavaScript：召唤灵兽的符咒</h2>
+<p>JavaScript 布阵，讲究响应之快。此符可唤一只灵猫，闻声而动：</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">spiritCat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"山君"</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">realm</span><span class="o">:</span><span class="w"> </span><span class="s2">"金丹期"</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">speak</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="si">}</span><span class="sb">：喵了个咪，灵气不足。`</span><span class="p">);</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="k">async</span><span class="w"> </span><span class="nx">fetchSpirit</span><span class="p">(</span><span class="nx">api</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="nx">api</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">res</span><span class="p">.</span><span class="nx">ok</span><span class="p">)</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="sb">`召唤失败：</span><span class="si">${</span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">};</span>
+
+<span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s2">"#summon-btn"</span><span class="p">)</span><span class="o">?</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">"click"</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">spiritCat</span><span class="p">.</span><span class="nx">speak</span><span class="p">();</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<p>要点：对象字面量、模板字符串、<code>async/await</code>、可选链 <code>?.</code>，皆是唤灵入门的七步功。</p>
+<h2 id="三两者之辨">三、两者之辨</h2>
+<table>
+<thead>
+<tr>
+<th>阵法</th>
+<th>心法</th>
+<th>擅长</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python</td>
+<td>内丹之道</td>
+<td>数据、推演、山门杂务</td>
+</tr>
+<tr>
+<td>JavaScript</td>
+<td>符箓之道</td>
+<td>交互、呼应、即时相应</td>
+</tr>
+</tbody>
+</table>
+<p>同修双道者，谓之全栈散修。愿道友早日飞升。</p>
+    </div>
+    <aside class="toc" aria-label="章节目录">
+      <p class="toc-title">卷目</p>
+      <ol>
+        <li class="toc-l2"><a href="#一python御剑飞行矩阵">一、Python：御剑飞行矩阵</a></li>
+        <li class="toc-l2"><a href="#二javascript召唤灵兽的符咒">二、JavaScript：召唤灵兽的符咒</a></li>
+        <li class="toc-l2"><a href="#三两者之辨">三、两者之辨</a></li>
+      </ol>
+    </aside>
+  </div>
+  <section class="related" aria-label="相关文章">
+    <h2>他山之石 · 相关文章</h2>
+    <div class="related-list">
+      <a class="related-card" href="/posts/清心丸的三味药引/">
+        <span class="related-date">2026-02-14</span>
+        <span class="related-title">丹方：清心丸的三味药引</span>
+      </a>
+      <a class="related-card" href="/posts/御剑术入门/">
+        <span class="related-date">2026-01-08</span>
+        <span class="related-title">御剑术入门：从养剑到起诀</span>
+      </a>
+      <a class="related-card" href="/posts/山海见闻东海篇/">
+        <span class="related-date">2026-06-30</span>
+        <span class="related-title">山海见闻 · 东海篇</span>
+      </a>
+    </div>
+  </section>
+  <nav class="post-nav" aria-label="上一篇/下一篇">
+<a class="post-nav-next" href="/posts/山海见闻东海篇/">山海见闻 · 东海篇 →</a>  </nav>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="cloud-divider" aria-hidden="true">
+    <svg viewBox="0 0 480 18" role="presentation"><use href="#cloud-symbol" x="0"/><use href="#cloud-symbol" x="144"/><use href="#cloud-symbol" x="288"/><use href="#cloud-symbol" x="432" transform="scale(-1,1) translate(-480,0)"/></svg>
+  </div>
+  <p class="footer-line">剑气纵横三万里，一剑光寒十九州。</p>
+  <p class="footer-meta">© 2026 无名散修 · 由 post-generator 铸造 · <a href="/atom.xml">Atom</a> / <a href="/rss.xml">RSS</a></p>
+</footer>
+<div id="search-panel" class="search-panel" hidden aria-hidden="true">
+  <div class="search-box" role="dialog" aria-modal="true" aria-labelledby="search-title">
+    <h2 id="search-title" class="visually-hidden">站内搜索</h2>
+    <div class="search-field">
+      <label class="visually-hidden" for="search-input">搜索关键词</label>
+      <input id="search-input" type="search" placeholder="搜剑诀、丹方、见闻…" autocomplete="off">
+      <button id="search-close" class="icon-btn" aria-label="关闭搜索">✕</button>
+    </div>
+    <p id="search-status" class="search-status" role="status"></p>
+    <ul id="search-results" class="search-results"></ul>
+  </div>
+</div>
+<script src="assets/search-index.js" defer></script>
+<script src="assets/js/theme.js" defer></script>
+<script src="assets/js/search.js" defer></script>
+<script src="assets/js/main.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="assets/rss.xsl"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>青云志</title>
+  <link>https://wsn-star.github.io</link>
+  <description>一介散修的问道笔记：剑诀、丹方与山海见闻</description>
+  <language>zh-CN</language>
+  <lastBuildDate>Tue, 15 Sep 2026 00:00:00 -0400</lastBuildDate>
+  <atom:link href="https://wsn-star.github.io/rss.xml" rel="self" type="application/rss+xml"/>
+  <item>
+    <title>阵图入门：Python 与 JavaScript 的召唤咒语</title>
+    <link>https://wsn-star.github.io/posts/%E9%98%B5%E5%9B%BE%E5%85%A5%E9%97%A8/</link>
+    <guid isPermaLink="true">https://wsn-star.github.io/posts/%E9%98%B5%E5%9B%BE%E5%85%A5%E9%97%A8/</guid>
+    <pubDate>Tue, 15 Sep 2026 00:00:00 -0400</pubDate>
+    <description><![CDATA[修仙界亦有代码。以 Python 布阵、以 JavaScript 唤灵，各有一段入门咒语，附注释以示后人。]]></description>
+<category>代码</category><category>修行</category><category>阵法</category>  </item>
+  <item>
+    <title>山海见闻 · 东海篇</title>
+    <link>https://wsn-star.github.io/posts/%E5%B1%B1%E6%B5%B7%E8%A7%81%E9%97%BB%E4%B8%9C%E6%B5%B7%E7%AF%87/</link>
+    <guid isPermaLink="true">https://wsn-star.github.io/posts/%E5%B1%B1%E6%B5%B7%E8%A7%81%E9%97%BB%E4%B8%9C%E6%B5%B7%E7%AF%87/</guid>
+    <pubDate>Tue, 30 Jun 2026 00:00:00 -0400</pubDate>
+    <description><![CDATA[乘槎浮海三月，所见所闻，略记一二：会说话的龟、会下雨的云、不会沉的海市。]]></description>
+<category>见闻</category><category>游记</category>  </item>
+  <item>
+    <title>丹方：清心丸的三味药引</title>
+    <link>https://wsn-star.github.io/posts/%E6%B8%85%E5%BF%83%E4%B8%B8%E7%9A%84%E4%B8%89%E5%91%B3%E8%8D%AF%E5%BC%95/</link>
+    <guid isPermaLink="true">https://wsn-star.github.io/posts/%E6%B8%85%E5%BF%83%E4%B8%B8%E7%9A%84%E4%B8%89%E5%91%B3%E8%8D%AF%E5%BC%95/</guid>
+    <pubDate>Sat, 14 Feb 2026 00:00:00 -0500</pubDate>
+    <description><![CDATA[心浮则气逆，气逆则丹败。清心丸重在药引，而非主药分量。]]></description>
+<category>丹方</category><category>修行</category>  </item>
+  <item>
+    <title>御剑术入门：从养剑到起诀</title>
+    <link>https://wsn-star.github.io/posts/%E5%BE%A1%E5%89%91%E6%9C%AF%E5%85%A5%E9%97%A8/</link>
+    <guid isPermaLink="true">https://wsn-star.github.io/posts/%E5%BE%A1%E5%89%91%E6%9C%AF%E5%85%A5%E9%97%A8/</guid>
+    <pubDate>Thu, 08 Jan 2026 00:00:00 -0500</pubDate>
+    <description><![CDATA[剑为心之影。记下养剑、引气、起诀三步工夫，与初学者最容易犯的七种错。]]></description>
+<category>剑诀</category><category>修行</category>  </item>
+</channel>
+</rss>

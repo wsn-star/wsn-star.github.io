@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://wsn-star.github.io/sitemap.xml
