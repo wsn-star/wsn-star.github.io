@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>问道阁：AI 加持的本地个人知识库建设指南 · 青云志</title>
+<title>AI 加持的本地个人知识库建设指南 · 青云志</title>
 <meta name="description" content="从 Karpathy 的 LLM Wiki 模式到本地 RAG 与图检索，一文讲清 2026 年「完全本地、隐私安全、越用越聪明」的个人知识库怎么搭。">
 <link rel="canonical" href="https://wsn-star.github.io/posts/ai%E6%9C%AC%E5%9C%B0%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E5%BA%93%E5%BB%BA%E8%AE%BE/"><meta name="generator" content="post-generator v0.1.0">
 <meta name="theme-color" content="#141c21">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "author": {"@type": "Person", "name": "\u65e0\u540d\u6563\u4fee"}, "dateModified": "2026-09-18T00:00:00-04:00", "datePublished": "2026-09-18T00:00:00-04:00", "description": "\u4ece Karpathy \u7684 LLM Wiki \u6a21\u5f0f\u5230\u672c\u5730 RAG \u4e0e\u56fe\u68c0\u7d22\uff0c\u4e00\u6587\u8bb2\u6e05 2026 \u5e74\u300c\u5b8c\u5168\u672c\u5730\u3001\u9690\u79c1\u5b89\u5168\u3001\u8d8a\u7528\u8d8a\u806a\u660e\u300d\u7684\u4e2a\u4eba\u77e5\u8bc6\u5e93\u600e\u4e48\u642d\u3002", "headline": "\u95ee\u9053\u9601\uff1aAI \u52a0\u6301\u7684\u672c\u5730\u4e2a\u4eba\u77e5\u8bc6\u5e93\u5efa\u8bbe\u6307\u5357", "keywords": "AI\uff0c\u77e5\u8bc6\u5e93\uff0cRAG\uff0c\u672c\u5730\u90e8\u7f72", "mainEntityOfPage": "https://wsn-star.github.io/posts/ai%E6%9C%AC%E5%9C%B0%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E5%BA%93%E5%BB%BA%E8%AE%BE/"}</script><link rel="stylesheet" href="/assets/css/xianxia.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "author": {"@type": "Person", "name": "\u65e0\u540d\u6563\u4fee"}, "dateModified": "2026-09-18T00:00:00-04:00", "datePublished": "2026-09-18T00:00:00-04:00", "description": "\u4ece Karpathy \u7684 LLM Wiki \u6a21\u5f0f\u5230\u672c\u5730 RAG \u4e0e\u56fe\u68c0\u7d22\uff0c\u4e00\u6587\u8bb2\u6e05 2026 \u5e74\u300c\u5b8c\u5168\u672c\u5730\u3001\u9690\u79c1\u5b89\u5168\u3001\u8d8a\u7528\u8d8a\u806a\u660e\u300d\u7684\u4e2a\u4eba\u77e5\u8bc6\u5e93\u600e\u4e48\u642d\u3002", "headline": "AI \u52a0\u6301\u7684\u672c\u5730\u4e2a\u4eba\u77e5\u8bc6\u5e93\u5efa\u8bbe\u6307\u5357", "keywords": "AI\uff0c\u77e5\u8bc6\u5e93\uff0cRAG\uff0c\u672c\u5730\u90e8\u7f72", "mainEntityOfPage": "https://wsn-star.github.io/posts/ai%E6%9C%AC%E5%9C%B0%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E5%BA%93%E5%BB%BA%E8%AE%BE/"}</script><link rel="stylesheet" href="/assets/css/xianxia.css">
 <link rel="stylesheet" href="/assets/css/blog.css">
 <script>document.documentElement.dataset.theme = localStorage.getItem('xianxia-theme') || 'light';
 window.BLOG_ROOT = "";</script>
@@ -42,7 +42,7 @@ window.BLOG_ROOT = "";</script>
 <article class="post">
   <header class="post-head">
     <p class="post-route"><a href="/">首页</a> › <a href="/tags/">标签</a> › <a href="/archives/">归档</a></p>
-    <h1 class="post-title">问道阁：AI 加持的本地个人知识库建设指南</h1>
+    <h1 class="post-title">AI 加持的本地个人知识库建设指南</h1>
     <div class="post-meta">
       <time datetime="2026-09-18">2026年09月18日</time>
       <span>约 4 分钟</span>
@@ -52,10 +52,7 @@ window.BLOG_ROOT = "";</script>
   </header>
   <div class="post-layout">
     <div class="post-body prose">
-      <blockquote>
-<p>笔记之弊，在于积而不化。AI 加持，方能使藏经阁自行呼吸。</p>
-</blockquote>
-<!-- more -->
+      <!-- more -->
 
 <h2 id="一为什么是本地知识库">一、为什么是「本地」知识库</h2>
 <p>2026 年,把个人笔记交给云端 AI 的风险已经非常具体:数据出境、厂商锁定、以及「你的知识被拿去喂了别人的模型」。与此同时,本地推理能力大幅提升——<strong>Ollama 已成为事实上的本地推理层,llama.cpp 系的 GGUF 量化模型在消费级硬件上即可流畅运行</strong>。于是「本地知识库 + 本地模型」从极客玩具变成了严肃方案。</p>
@@ -144,8 +141,8 @@ window.BLOG_ROOT = "";</script>
 <li><strong>本地 ≠ 不备份</strong>:Git 仓库 + 冷备,双保险。</li>
 </ol>
 <h2 id="六结语">六、结语</h2>
-<p>2026 年的个人知识库,不再是「收集箱」,而是<strong>一座有 AI 书童常驻打理、自己会生长链接、只属于你的藏经阁</strong>。从最小 RAG 起步,向 LLM Wiki 与 Graph RAG 演进,你的笔记会从「存档」变成「资产」。</p>
-<p>记住那句话:数据不出门,智慧自内生。</p>
+<p>2026 年的个人知识库,不再是「收集箱」,而是<strong>一套有 AI 常驻打理、自动生长链接、完全归你所有的知识系统</strong>。从最小 RAG 起步,向 LLM Wiki 与 Graph RAG 演进,你的笔记会从「存档」变成「资产」。</p>
+<p>核心原则始终不变:<strong>数据不出门,系统自生长。</strong></p>
     </div>
     <aside class="toc" aria-label="章节目录">
       <p class="toc-title">卷目</p>
@@ -167,20 +164,20 @@ window.BLOG_ROOT = "";</script>
     <div class="related-list">
       <a class="related-card" href="/posts/ai-agent本地小模型部署综述/">
         <span class="related-date">2026-09-18</span>
-        <span class="related-title">方寸之地：AI Agent 本地部署小模型综述</span>
+        <span class="related-title">AI Agent 本地部署小模型综述</span>
       </a>
       <a class="related-card" href="/posts/每日ai导读/">
         <span class="related-date">2026-09-18</span>
-        <span class="related-title">今日AI导读·灵剑出匣</span>
+        <span class="related-title">每日 AI 导读:2026-09-18</span>
       </a>
       <a class="related-card" href="/posts/ai总体态势综述/">
         <span class="related-date">2026-09-18</span>
-        <span class="related-title">问道AI：2026 年人工智能总体态势综述</span>
+        <span class="related-title">2026 年人工智能总体态势综述</span>
       </a>
     </div>
   </section>
   <nav class="post-nav" aria-label="上一篇/下一篇">
-<a class="post-nav-prev" href="/posts/每日ai导读/">← 今日AI导读·灵剑出匣</a><a class="post-nav-next" href="/posts/ai总体态势综述/">问道AI：2026 年人工智能总体态势综述 →</a>  </nav>
+<a class="post-nav-prev" href="/posts/每日ai导读/">← 每日 AI 导读:2026-09-18</a><a class="post-nav-next" href="/posts/ai总体态势综述/">2026 年人工智能总体态势综述 →</a>  </nav>
 </article>
 </main>
 <footer class="site-footer">

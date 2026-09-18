@@ -9,49 +9,49 @@
   <lastBuildDate>Fri, 18 Sep 2026 00:00:00 -0400</lastBuildDate>
   <atom:link href="https://wsn-star.github.io/rss.xml" rel="self" type="application/rss+xml"/>
   <item>
-    <title>今日AI导读·灵剑出匣</title>
+    <title>每日 AI 导读:2026-09-18</title>
     <link>https://wsn-star.github.io/posts/%E6%AF%8F%E6%97%A5ai%E5%AF%BC%E8%AF%BB/</link>
     <guid isPermaLink="true">https://wsn-star.github.io/posts/%E6%AF%8F%E6%97%A5ai%E5%AF%BC%E8%AF%BB/</guid>
     <pubDate>Fri, 18 Sep 2026 00:00:00 -0400</pubDate>
-    <description><![CDATA[今日AI新闻报道，从安全攻破到创新研发，各路豪杰纷纷亮剑，一展AI江湖的风采。]]></description>
+    <description><![CDATA[2026年9月18日，AI领域发生了多起重要事件，包括模型发布、安全攻防、产业动态等。]]></description>
 <category>AI</category><category>每日导读</category>  </item>
   <item>
-    <title>问道阁：AI 加持的本地个人知识库建设指南</title>
+    <title>AI 加持的本地个人知识库建设指南</title>
     <link>https://wsn-star.github.io/posts/ai%E6%9C%AC%E5%9C%B0%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E5%BA%93%E5%BB%BA%E8%AE%BE/</link>
     <guid isPermaLink="true">https://wsn-star.github.io/posts/ai%E6%9C%AC%E5%9C%B0%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E5%BA%93%E5%BB%BA%E8%AE%BE/</guid>
     <pubDate>Fri, 18 Sep 2026 00:00:00 -0400</pubDate>
     <description><![CDATA[从 Karpathy 的 LLM Wiki 模式到本地 RAG 与图检索，一文讲清 2026 年「完全本地、隐私安全、越用越聪明」的个人知识库怎么搭。]]></description>
 <category>AI</category><category>知识库</category><category>RAG</category><category>本地部署</category>  </item>
   <item>
-    <title>问道AI：2026 年人工智能总体态势综述</title>
+    <title>2026 年人工智能总体态势综述</title>
     <link>https://wsn-star.github.io/posts/ai%E6%80%BB%E4%BD%93%E6%80%81%E5%8A%BF%E7%BB%BC%E8%BF%B0/</link>
     <guid isPermaLink="true">https://wsn-star.github.io/posts/ai%E6%80%BB%E4%BD%93%E6%80%81%E5%8A%BF%E7%BB%BC%E8%BF%B0/</guid>
     <pubDate>Fri, 18 Sep 2026 00:00:00 -0400</pubDate>
     <description><![CDATA[以斯坦福 AI Index 2026 为主线，梳理过去一年 AI 的真实进展、能力瓶颈、经济影响与治理困局，给出一名从业者真正能用的判断框架。]]></description>
 <category>AI</category><category>综述</category><category>大模型</category>  </item>
   <item>
-    <title>御剑炼丹：AI Agent 辅助编程的技术进展综述</title>
+    <title>AI Agent 辅助编程的技术进展综述（2025—2026）</title>
     <link>https://wsn-star.github.io/posts/ai-agent%E8%BE%85%E5%8A%A9%E7%BC%96%E7%A8%8B%E8%BF%9B%E5%B1%95/</link>
     <guid isPermaLink="true">https://wsn-star.github.io/posts/ai-agent%E8%BE%85%E5%8A%A9%E7%BC%96%E7%A8%8B%E8%BF%9B%E5%B1%95/</guid>
     <pubDate>Fri, 18 Sep 2026 00:00:00 -0400</pubDate>
     <description><![CDATA[从补全到自治编码，2025—2026 年 AI 编程助手完成了从「帮你打字」到「替你开车」的跃迁。一文拆解 Claude Code、Cursor、Composer 的架构演进、基准真相与落地要点。]]></description>
 <category>AI</category><category>Agent</category><category>编程</category><category>SWE-bench</category>  </item>
   <item>
-    <title>众仙摆阵：AI Agent 框架全景综述</title>
+    <title>AI Agent 框架全景综述（2026）</title>
     <link>https://wsn-star.github.io/posts/ai-agent%E6%A1%86%E6%9E%B6%E7%BB%BC%E8%BF%B0/</link>
     <guid isPermaLink="true">https://wsn-star.github.io/posts/ai-agent%E6%A1%86%E6%9E%B6%E7%BB%BC%E8%BF%B0/</guid>
     <pubDate>Fri, 18 Sep 2026 00:00:00 -0400</pubDate>
     <description><![CDATA[LangGraph、CrewAI、OpenAI Agents SDK、AutoGen/AG2、Claude Agent SDK……2026 年 agent 框架已从「卷概念」走向「卷工程」。逐家拆解,并给一张真正可用的选型决策表。]]></description>
 <category>AI</category><category>Agent</category><category>框架</category><category>LangGraph</category><category>CrewAI</category>  </item>
   <item>
-    <title>方寸之地：AI Agent 本地部署小模型综述</title>
+    <title>AI Agent 本地部署小模型综述</title>
     <link>https://wsn-star.github.io/posts/ai-agent%E6%9C%AC%E5%9C%B0%E5%B0%8F%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E7%BB%BC%E8%BF%B0/</link>
     <guid isPermaLink="true">https://wsn-star.github.io/posts/ai-agent%E6%9C%AC%E5%9C%B0%E5%B0%8F%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E7%BB%BC%E8%BF%B0/</guid>
     <pubDate>Fri, 18 Sep 2026 00:00:00 -0400</pubDate>
     <description><![CDATA[从 7B 量化到 NPU 端侧推理，2026 年小模型本地部署已成 Agent 落地的关键底座。拆解量化、蒸馏、运行时选型与硬件边界，给出真正可执行的选型路线。]]></description>
 <category>AI</category><category>小模型</category><category>本地部署</category><category>量化</category><category>边缘计算</category>  </item>
   <item>
-    <title>铸甲驭灵：AI Agent 的 Harness 工程综述</title>
+    <title>AI Agent 的 Harness 工程综述</title>
     <link>https://wsn-star.github.io/posts/ai-agent-harness%E7%BB%BC%E8%BF%B0/</link>
     <guid isPermaLink="true">https://wsn-star.github.io/posts/ai-agent-harness%E7%BB%BC%E8%BF%B0/</guid>
     <pubDate>Fri, 18 Sep 2026 00:00:00 -0400</pubDate>

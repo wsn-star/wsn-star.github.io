@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>御剑炼丹：AI Agent 辅助编程的技术进展综述 · 青云志</title>
+<title>AI Agent 辅助编程的技术进展综述（2025—2026） · 青云志</title>
 <meta name="description" content="从补全到自治编码，2025—2026 年 AI 编程助手完成了从「帮你打字」到「替你开车」的跃迁。一文拆解 Claude Code、Cursor、Composer 的架构演进、基准真相与落地要点。">
 <link rel="canonical" href="https://wsn-star.github.io/posts/ai-agent%E8%BE%85%E5%8A%A9%E7%BC%96%E7%A8%8B%E8%BF%9B%E5%B1%95/"><meta name="generator" content="post-generator v0.1.0">
 <meta name="theme-color" content="#141c21">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "author": {"@type": "Person", "name": "\u65e0\u540d\u6563\u4fee"}, "dateModified": "2026-09-18T00:00:00-04:00", "datePublished": "2026-09-18T00:00:00-04:00", "description": "\u4ece\u8865\u5168\u5230\u81ea\u6cbb\u7f16\u7801\uff0c2025\u20142026 \u5e74 AI \u7f16\u7a0b\u52a9\u624b\u5b8c\u6210\u4e86\u4ece\u300c\u5e2e\u4f60\u6253\u5b57\u300d\u5230\u300c\u66ff\u4f60\u5f00\u8f66\u300d\u7684\u8dc3\u8fc1\u3002\u4e00\u6587\u62c6\u89e3 Claude Code\u3001Cursor\u3001Composer \u7684\u67b6\u6784\u6f14\u8fdb\u3001\u57fa\u51c6\u771f\u76f8\u4e0e\u843d\u5730\u8981\u70b9\u3002", "headline": "\u5fa1\u5251\u70bc\u4e39\uff1aAI Agent \u8f85\u52a9\u7f16\u7a0b\u7684\u6280\u672f\u8fdb\u5c55\u7efc\u8ff0", "keywords": "AI\uff0cAgent\uff0c\u7f16\u7a0b\uff0cSWE-bench", "mainEntityOfPage": "https://wsn-star.github.io/posts/ai-agent%E8%BE%85%E5%8A%A9%E7%BC%96%E7%A8%8B%E8%BF%9B%E5%B1%95/"}</script><link rel="stylesheet" href="/assets/css/xianxia.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "author": {"@type": "Person", "name": "\u65e0\u540d\u6563\u4fee"}, "dateModified": "2026-09-18T00:00:00-04:00", "datePublished": "2026-09-18T00:00:00-04:00", "description": "\u4ece\u8865\u5168\u5230\u81ea\u6cbb\u7f16\u7801\uff0c2025\u20142026 \u5e74 AI \u7f16\u7a0b\u52a9\u624b\u5b8c\u6210\u4e86\u4ece\u300c\u5e2e\u4f60\u6253\u5b57\u300d\u5230\u300c\u66ff\u4f60\u5f00\u8f66\u300d\u7684\u8dc3\u8fc1\u3002\u4e00\u6587\u62c6\u89e3 Claude Code\u3001Cursor\u3001Composer \u7684\u67b6\u6784\u6f14\u8fdb\u3001\u57fa\u51c6\u771f\u76f8\u4e0e\u843d\u5730\u8981\u70b9\u3002", "headline": "AI Agent \u8f85\u52a9\u7f16\u7a0b\u7684\u6280\u672f\u8fdb\u5c55\u7efc\u8ff0\uff082025\u20142026\uff09", "keywords": "AI\uff0cAgent\uff0c\u7f16\u7a0b\uff0cSWE-bench", "mainEntityOfPage": "https://wsn-star.github.io/posts/ai-agent%E8%BE%85%E5%8A%A9%E7%BC%96%E7%A8%8B%E8%BF%9B%E5%B1%95/"}</script><link rel="stylesheet" href="/assets/css/xianxia.css">
 <link rel="stylesheet" href="/assets/css/blog.css">
 <script>document.documentElement.dataset.theme = localStorage.getItem('xianxia-theme') || 'light';
 window.BLOG_ROOT = "";</script>
@@ -42,7 +42,7 @@ window.BLOG_ROOT = "";</script>
 <article class="post">
   <header class="post-head">
     <p class="post-route"><a href="/">首页</a> › <a href="/tags/">标签</a> › <a href="/archives/">归档</a></p>
-    <h1 class="post-title">御剑炼丹：AI Agent 辅助编程的技术进展综述</h1>
+    <h1 class="post-title">AI Agent 辅助编程的技术进展综述（2025—2026）</h1>
     <div class="post-meta">
       <time datetime="2026-09-18">2026年09月18日</time>
       <span>约 4 分钟</span>
@@ -52,10 +52,7 @@ window.BLOG_ROOT = "";</script>
   </header>
   <div class="post-layout">
     <div class="post-body prose">
-      <blockquote>
-<p>昔日用剑者，今以剑御人。代码之灵已成，驾驭之道在焉。</p>
-</blockquote>
-<!-- more -->
+      <!-- more -->
 
 <h2 id="一范式转变从补全到自治">一、范式转变：从「补全」到「自治」</h2>
 <p>两三年前,AI 编程工具还停留在「补全下一行」的阶段。2025—2026 年,行业完成了两次跃迁:</p>
@@ -110,9 +107,8 @@ window.BLOG_ROOT = "";</script>
 <li><strong>人机分工</strong>:IDE 编辑器内快速小改交给 Cursor 这类,大规模跨文件重构与 CI/CD 自动化交给 Claude Code 这类自治 agent。</li>
 <li><strong>永远保持验收回路</strong>:任何 agent 的提交,都要经过你自己的测试与 review——它变强了,但没到你放手的地步。</li>
 </ol>
-<h2 id="五结语">五、结语</h2>
+<h2 id="六结语">六、结语</h2>
 <p>2025—2026 年,编程 Agent 完成了从「补全器」到「自治工程师」的跃迁,也暴露了「基准失真」这一行业软肋。真正的生产力并不来自抢最新的模型,而来自:<strong>能不能把 agent 编排进一个可测试、可验收、可回滚的工程流程。</strong></p>
-<p>剑要快,更要握得稳。</p>
     </div>
     <aside class="toc" aria-label="章节目录">
       <p class="toc-title">卷目</p>
@@ -125,7 +121,7 @@ window.BLOG_ROOT = "";</script>
         <li class="toc-l2"><a href="#三基准乱局swe-bench-的可信度危机">三、基准乱局：SWE-bench 的可信度危机</a></li>
         <li class="toc-l2"><a href="#四架构层面的共性认识">四、架构层面的共性认识</a></li>
         <li class="toc-l2"><a href="#五避坑与上手建议">五、避坑与上手建议</a></li>
-        <li class="toc-l2"><a href="#五结语">五、结语</a></li>
+        <li class="toc-l2"><a href="#六结语">六、结语</a></li>
       </ol>
     </aside>
   </div>
@@ -134,20 +130,20 @@ window.BLOG_ROOT = "";</script>
     <div class="related-list">
       <a class="related-card" href="/posts/ai-agent框架综述/">
         <span class="related-date">2026-09-18</span>
-        <span class="related-title">众仙摆阵：AI Agent 框架全景综述</span>
+        <span class="related-title">AI Agent 框架全景综述（2026）</span>
       </a>
       <a class="related-card" href="/posts/ai-agent-harness综述/">
         <span class="related-date">2026-09-18</span>
-        <span class="related-title">铸甲驭灵：AI Agent 的 Harness 工程综述</span>
+        <span class="related-title">AI Agent 的 Harness 工程综述</span>
       </a>
       <a class="related-card" href="/posts/每日ai导读/">
         <span class="related-date">2026-09-18</span>
-        <span class="related-title">今日AI导读·灵剑出匣</span>
+        <span class="related-title">每日 AI 导读:2026-09-18</span>
       </a>
     </div>
   </section>
   <nav class="post-nav" aria-label="上一篇/下一篇">
-<a class="post-nav-prev" href="/posts/ai总体态势综述/">← 问道AI：2026 年人工智能总体态势综述</a><a class="post-nav-next" href="/posts/ai-agent框架综述/">众仙摆阵：AI Agent 框架全景综述 →</a>  </nav>
+<a class="post-nav-prev" href="/posts/ai总体态势综述/">← 2026 年人工智能总体态势综述</a><a class="post-nav-next" href="/posts/ai-agent框架综述/">AI Agent 框架全景综述（2026） →</a>  </nav>
 </article>
 </main>
 <footer class="site-footer">

@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>众仙摆阵：AI Agent 框架全景综述 · 青云志</title>
+<title>AI Agent 框架全景综述（2026） · 青云志</title>
 <meta name="description" content="LangGraph、CrewAI、OpenAI Agents SDK、AutoGen/AG2、Claude Agent SDK……2026 年 agent 框架已从「卷概念」走向「卷工程」。逐家拆解,并给一张真正可用的选型决策表。">
 <link rel="canonical" href="https://wsn-star.github.io/posts/ai-agent%E6%A1%86%E6%9E%B6%E7%BB%BC%E8%BF%B0/"><meta name="generator" content="post-generator v0.1.0">
 <meta name="theme-color" content="#141c21">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "author": {"@type": "Person", "name": "\u65e0\u540d\u6563\u4fee"}, "dateModified": "2026-09-18T00:00:00-04:00", "datePublished": "2026-09-18T00:00:00-04:00", "description": "LangGraph\u3001CrewAI\u3001OpenAI Agents SDK\u3001AutoGen/AG2\u3001Claude Agent SDK\u2026\u20262026 \u5e74 agent \u6846\u67b6\u5df2\u4ece\u300c\u5377\u6982\u5ff5\u300d\u8d70\u5411\u300c\u5377\u5de5\u7a0b\u300d\u3002\u9010\u5bb6\u62c6\u89e3,\u5e76\u7ed9\u4e00\u5f20\u771f\u6b63\u53ef\u7528\u7684\u9009\u578b\u51b3\u7b56\u8868\u3002", "headline": "\u4f17\u4ed9\u6446\u9635\uff1aAI Agent \u6846\u67b6\u5168\u666f\u7efc\u8ff0", "keywords": "AI\uff0cAgent\uff0c\u6846\u67b6\uff0cLangGraph\uff0cCrewAI", "mainEntityOfPage": "https://wsn-star.github.io/posts/ai-agent%E6%A1%86%E6%9E%B6%E7%BB%BC%E8%BF%B0/"}</script><link rel="stylesheet" href="/assets/css/xianxia.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "author": {"@type": "Person", "name": "\u65e0\u540d\u6563\u4fee"}, "dateModified": "2026-09-18T00:00:00-04:00", "datePublished": "2026-09-18T00:00:00-04:00", "description": "LangGraph\u3001CrewAI\u3001OpenAI Agents SDK\u3001AutoGen/AG2\u3001Claude Agent SDK\u2026\u20262026 \u5e74 agent \u6846\u67b6\u5df2\u4ece\u300c\u5377\u6982\u5ff5\u300d\u8d70\u5411\u300c\u5377\u5de5\u7a0b\u300d\u3002\u9010\u5bb6\u62c6\u89e3,\u5e76\u7ed9\u4e00\u5f20\u771f\u6b63\u53ef\u7528\u7684\u9009\u578b\u51b3\u7b56\u8868\u3002", "headline": "AI Agent \u6846\u67b6\u5168\u666f\u7efc\u8ff0\uff082026\uff09", "keywords": "AI\uff0cAgent\uff0c\u6846\u67b6\uff0cLangGraph\uff0cCrewAI", "mainEntityOfPage": "https://wsn-star.github.io/posts/ai-agent%E6%A1%86%E6%9E%B6%E7%BB%BC%E8%BF%B0/"}</script><link rel="stylesheet" href="/assets/css/xianxia.css">
 <link rel="stylesheet" href="/assets/css/blog.css">
 <script>document.documentElement.dataset.theme = localStorage.getItem('xianxia-theme') || 'light';
 window.BLOG_ROOT = "";</script>
@@ -42,7 +42,7 @@ window.BLOG_ROOT = "";</script>
 <article class="post">
   <header class="post-head">
     <p class="post-route"><a href="/">首页</a> › <a href="/tags/">标签</a> › <a href="/archives/">归档</a></p>
-    <h1 class="post-title">众仙摆阵：AI Agent 框架全景综述</h1>
+    <h1 class="post-title">AI Agent 框架全景综述（2026）</h1>
     <div class="post-meta">
       <time datetime="2026-09-18">2026年09月18日</time>
       <span>约 4 分钟</span>
@@ -52,10 +52,7 @@ window.BLOG_ROOT = "";</script>
   </header>
   <div class="post-layout">
     <div class="post-body prose">
-      <blockquote>
-<p>昔者各据一隅,今则百器争鸣。铸造术之盛,莫过于此。</p>
-</blockquote>
-<!-- more -->
+      <!-- more -->
 
 <h2 id="一时代背景框架们成年了">一、时代背景：框架们「成年」了</h2>
 <p>2023 年,"做一个 AI agent"意味着用 while 循环包一层 GPT-4 调工具。到 2026 年,<strong>框架已经追上真实生产 agent 系统的复杂度</strong>。最关键的转折:</p>
@@ -160,8 +157,7 @@ window.BLOG_ROOT = "";</script>
 <li><strong>企业选型看可观测性与安全</strong>:选带好 trace 与记忆隔离的,别选最炫的。</li>
 </ol>
 <h2 id="六结语">六、结语</h2>
-<p>2026 年的 agent 框架,已从" 证明你也能写个 agent"的炫技阶段,进入" <strong>管得住、看得见、能回滚、敢上生产</strong>"的工程阶段。真正的选型智慧,不是追最火的名字,而是:<strong>让框架匹配你的状态拓扑,让你永远握有人工介入的缰绳。</strong></p>
-<p>摆阵容易,驭阵在人。</p>
+<p>2026 年的 agent 框架,已从" 证明你也能写个 agent"的炫技阶段,进入" <strong>管得住、看得见、能回滚、敢上生产</strong>"的工程阶段。真正的选型智慧,不是追最火的名字,而是:<strong>让框架匹配你的状态拓扑,并始终保留人工介入的主动权。</strong></p>
     </div>
     <aside class="toc" aria-label="章节目录">
       <p class="toc-title">卷目</p>
@@ -185,20 +181,20 @@ window.BLOG_ROOT = "";</script>
     <div class="related-list">
       <a class="related-card" href="/posts/ai-agent辅助编程进展/">
         <span class="related-date">2026-09-18</span>
-        <span class="related-title">御剑炼丹：AI Agent 辅助编程的技术进展综述</span>
+        <span class="related-title">AI Agent 辅助编程的技术进展综述（2025—2026）</span>
       </a>
       <a class="related-card" href="/posts/ai-agent-harness综述/">
         <span class="related-date">2026-09-18</span>
-        <span class="related-title">铸甲驭灵：AI Agent 的 Harness 工程综述</span>
+        <span class="related-title">AI Agent 的 Harness 工程综述</span>
       </a>
       <a class="related-card" href="/posts/每日ai导读/">
         <span class="related-date">2026-09-18</span>
-        <span class="related-title">今日AI导读·灵剑出匣</span>
+        <span class="related-title">每日 AI 导读:2026-09-18</span>
       </a>
     </div>
   </section>
   <nav class="post-nav" aria-label="上一篇/下一篇">
-<a class="post-nav-prev" href="/posts/ai-agent辅助编程进展/">← 御剑炼丹：AI Agent 辅助编程的技术进展综述</a><a class="post-nav-next" href="/posts/ai-agent本地小模型部署综述/">方寸之地：AI Agent 本地部署小模型综述 →</a>  </nav>
+<a class="post-nav-prev" href="/posts/ai-agent辅助编程进展/">← AI Agent 辅助编程的技术进展综述（2025—2026）</a><a class="post-nav-next" href="/posts/ai-agent本地小模型部署综述/">AI Agent 本地部署小模型综述 →</a>  </nav>
 </article>
 </main>
 <footer class="site-footer">

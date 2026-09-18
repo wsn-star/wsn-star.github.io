@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>方寸之地：AI Agent 本地部署小模型综述 · 青云志</title>
+<title>AI Agent 本地部署小模型综述 · 青云志</title>
 <meta name="description" content="从 7B 量化到 NPU 端侧推理，2026 年小模型本地部署已成 Agent 落地的关键底座。拆解量化、蒸馏、运行时选型与硬件边界，给出真正可执行的选型路线。">
 <link rel="canonical" href="https://wsn-star.github.io/posts/ai-agent%E6%9C%AC%E5%9C%B0%E5%B0%8F%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E7%BB%BC%E8%BF%B0/"><meta name="generator" content="post-generator v0.1.0">
 <meta name="theme-color" content="#141c21">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "author": {"@type": "Person", "name": "\u65e0\u540d\u6563\u4fee"}, "dateModified": "2026-09-18T00:00:00-04:00", "datePublished": "2026-09-18T00:00:00-04:00", "description": "\u4ece 7B \u91cf\u5316\u5230 NPU \u7aef\u4fa7\u63a8\u7406\uff0c2026 \u5e74\u5c0f\u6a21\u578b\u672c\u5730\u90e8\u7f72\u5df2\u6210 Agent \u843d\u5730\u7684\u5173\u952e\u5e95\u5ea7\u3002\u62c6\u89e3\u91cf\u5316\u3001\u84b8\u998f\u3001\u8fd0\u884c\u65f6\u9009\u578b\u4e0e\u786c\u4ef6\u8fb9\u754c\uff0c\u7ed9\u51fa\u771f\u6b63\u53ef\u6267\u884c\u7684\u9009\u578b\u8def\u7ebf\u3002", "headline": "\u65b9\u5bf8\u4e4b\u5730\uff1aAI Agent \u672c\u5730\u90e8\u7f72\u5c0f\u6a21\u578b\u7efc\u8ff0", "keywords": "AI\uff0c\u5c0f\u6a21\u578b\uff0c\u672c\u5730\u90e8\u7f72\uff0c\u91cf\u5316\uff0c\u8fb9\u7f18\u8ba1\u7b97", "mainEntityOfPage": "https://wsn-star.github.io/posts/ai-agent%E6%9C%AC%E5%9C%B0%E5%B0%8F%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E7%BB%BC%E8%BF%B0/"}</script><link rel="stylesheet" href="/assets/css/xianxia.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "author": {"@type": "Person", "name": "\u65e0\u540d\u6563\u4fee"}, "dateModified": "2026-09-18T00:00:00-04:00", "datePublished": "2026-09-18T00:00:00-04:00", "description": "\u4ece 7B \u91cf\u5316\u5230 NPU \u7aef\u4fa7\u63a8\u7406\uff0c2026 \u5e74\u5c0f\u6a21\u578b\u672c\u5730\u90e8\u7f72\u5df2\u6210 Agent \u843d\u5730\u7684\u5173\u952e\u5e95\u5ea7\u3002\u62c6\u89e3\u91cf\u5316\u3001\u84b8\u998f\u3001\u8fd0\u884c\u65f6\u9009\u578b\u4e0e\u786c\u4ef6\u8fb9\u754c\uff0c\u7ed9\u51fa\u771f\u6b63\u53ef\u6267\u884c\u7684\u9009\u578b\u8def\u7ebf\u3002", "headline": "AI Agent \u672c\u5730\u90e8\u7f72\u5c0f\u6a21\u578b\u7efc\u8ff0", "keywords": "AI\uff0c\u5c0f\u6a21\u578b\uff0c\u672c\u5730\u90e8\u7f72\uff0c\u91cf\u5316\uff0c\u8fb9\u7f18\u8ba1\u7b97", "mainEntityOfPage": "https://wsn-star.github.io/posts/ai-agent%E6%9C%AC%E5%9C%B0%E5%B0%8F%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E7%BB%BC%E8%BF%B0/"}</script><link rel="stylesheet" href="/assets/css/xianxia.css">
 <link rel="stylesheet" href="/assets/css/blog.css">
 <script>document.documentElement.dataset.theme = localStorage.getItem('xianxia-theme') || 'light';
 window.BLOG_ROOT = "";</script>
@@ -42,7 +42,7 @@ window.BLOG_ROOT = "";</script>
 <article class="post">
   <header class="post-head">
     <p class="post-route"><a href="/">首页</a> › <a href="/tags/">标签</a> › <a href="/archives/">归档</a></p>
-    <h1 class="post-title">方寸之地：AI Agent 本地部署小模型综述</h1>
+    <h1 class="post-title">AI Agent 本地部署小模型综述</h1>
     <div class="post-meta">
       <time datetime="2026-09-18">2026年09月18日</time>
       <span>约 4 分钟</span>
@@ -52,10 +52,7 @@ window.BLOG_ROOT = "";</script>
   </header>
   <div class="post-layout">
     <div class="post-body prose">
-      <blockquote>
-<p>大法虽强，法不可轻移；移入方寸之间，方为已用。</p>
-</blockquote>
-<!-- more -->
+      <!-- more -->
 
 <h2 id="一为什么小模型本地部署突然重要">一、为什么「小模型本地部署」突然重要</h2>
 <p>两年前的共识是「能力在云端」,但 2026 年的格局已经反转:</p>
@@ -145,8 +142,7 @@ window.BLOG_ROOT = "";</script>
 <li><strong>评估闭环不可省</strong>:本地模型差距用你的真实任务集验证,别用榜单结论代替。</li>
 </ol>
 <h2 id="七结语">七、结语</h2>
-<p>2026 年,「把 Agent 跑在本地」不再是妥协,而是一种<strong>架构选择</strong>:隐私、成本、延迟、可控,全都要回来了。量化与蒸馏把大模型的能力压缩进方寸之间,而你的任务,是选对那枚「适合自己的丹」——不是越大越好,而是<strong>在你能掌控的硬件上,跑出可信、可验证的结果</strong>。</p>
-<p>大道至简,方寸即是乾坤。</p>
+<p>2026 年,「把 Agent 跑在本地」不再是妥协,而是一种<strong>架构选择</strong>:隐私、成本、延迟、可控,全都要回来了。量化与蒸馏把大模型的能力压缩进更小的参数规模,而你的任务,是选对那套<strong>适合自己硬件的组合</strong>——不是越大越好,而是<strong>在你能掌控的硬件上,跑出可信、可验证的结果</strong>。</p>
     </div>
     <aside class="toc" aria-label="章节目录">
       <p class="toc-title">卷目</p>
@@ -166,20 +162,20 @@ window.BLOG_ROOT = "";</script>
     <div class="related-list">
       <a class="related-card" href="/posts/ai本地个人知识库建设/">
         <span class="related-date">2026-09-18</span>
-        <span class="related-title">问道阁：AI 加持的本地个人知识库建设指南</span>
+        <span class="related-title">AI 加持的本地个人知识库建设指南</span>
       </a>
       <a class="related-card" href="/posts/每日ai导读/">
         <span class="related-date">2026-09-18</span>
-        <span class="related-title">今日AI导读·灵剑出匣</span>
+        <span class="related-title">每日 AI 导读:2026-09-18</span>
       </a>
       <a class="related-card" href="/posts/ai总体态势综述/">
         <span class="related-date">2026-09-18</span>
-        <span class="related-title">问道AI：2026 年人工智能总体态势综述</span>
+        <span class="related-title">2026 年人工智能总体态势综述</span>
       </a>
     </div>
   </section>
   <nav class="post-nav" aria-label="上一篇/下一篇">
-<a class="post-nav-prev" href="/posts/ai-agent框架综述/">← 众仙摆阵：AI Agent 框架全景综述</a><a class="post-nav-next" href="/posts/ai-agent-harness综述/">铸甲驭灵：AI Agent 的 Harness 工程综述 →</a>  </nav>
+<a class="post-nav-prev" href="/posts/ai-agent框架综述/">← AI Agent 框架全景综述（2026）</a><a class="post-nav-next" href="/posts/ai-agent-harness综述/">AI Agent 的 Harness 工程综述 →</a>  </nav>
 </article>
 </main>
 <footer class="site-footer">
