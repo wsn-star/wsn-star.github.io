@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>方寸之地：AI Agent 本地部署小模型综述 · 青云志</title>
+<meta name="description" content="从 7B 量化到 NPU 端侧推理，2026 年小模型本地部署已成 Agent 落地的关键底座。拆解量化、蒸馏、运行时选型与硬件边界，给出真正可执行的选型路线。">
+<link rel="canonical" href="https://wsn-star.github.io/posts/ai-agent%E6%9C%AC%E5%9C%B0%E5%B0%8F%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E7%BB%BC%E8%BF%B0/"><meta name="generator" content="post-generator v0.1.0">
+<meta name="theme-color" content="#141c21">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "author": {"@type": "Person", "name": "\u65e0\u540d\u6563\u4fee"}, "dateModified": "2026-09-18T00:00:00-04:00", "datePublished": "2026-09-18T00:00:00-04:00", "description": "\u4ece 7B \u91cf\u5316\u5230 NPU \u7aef\u4fa7\u63a8\u7406\uff0c2026 \u5e74\u5c0f\u6a21\u578b\u672c\u5730\u90e8\u7f72\u5df2\u6210 Agent \u843d\u5730\u7684\u5173\u952e\u5e95\u5ea7\u3002\u62c6\u89e3\u91cf\u5316\u3001\u84b8\u998f\u3001\u8fd0\u884c\u65f6\u9009\u578b\u4e0e\u786c\u4ef6\u8fb9\u754c\uff0c\u7ed9\u51fa\u771f\u6b63\u53ef\u6267\u884c\u7684\u9009\u578b\u8def\u7ebf\u3002", "headline": "\u65b9\u5bf8\u4e4b\u5730\uff1aAI Agent \u672c\u5730\u90e8\u7f72\u5c0f\u6a21\u578b\u7efc\u8ff0", "keywords": "AI\uff0c\u5c0f\u6a21\u578b\uff0c\u672c\u5730\u90e8\u7f72\uff0c\u91cf\u5316\uff0c\u8fb9\u7f18\u8ba1\u7b97", "mainEntityOfPage": "https://wsn-star.github.io/posts/ai-agent%E6%9C%AC%E5%9C%B0%E5%B0%8F%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E7%BB%BC%E8%BF%B0/"}</script><link rel="stylesheet" href="/assets/css/xianxia.css">
+<link rel="stylesheet" href="/assets/css/blog.css">
+<script>document.documentElement.dataset.theme = localStorage.getItem('xianxia-theme') || 'light';
+window.BLOG_ROOT = "";</script>
+</head>
+<body class="xianxia">
+<svg class="deco-svg" aria-hidden="true"><defs>
+  <symbol id="cloud-symbol" viewBox="0 0 48 16">
+    <path d="M24 2c-3.2 0-5.8 2-6.9 4.8C13.9 6.2 11 8.4 11 11.2 11 14 13.4 16 16.4 16h15.2c3 0 5.4-2 5.4-4.8 0-2.8-2.9-5-6.1-5.2C29.8 3.4 27.2 2 24 2z" fill="currentColor" opacity=".55"/>
+    <circle cx="38" cy="6" r="4.5" fill="currentColor" opacity=".3"/>
+    <circle cx="8" cy="10" r="3" fill="currentColor" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <nav class="nav-bar" aria-label="主导航">
+    <a class="brand" href="/">青云志</a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="site-menu" aria-label="打开菜单">☰</button>
+    <ul class="site-menu" id="site-menu">
+      <li><a href="/">首页</a></li>
+      <li><a href="/archives/">归档</a></li>
+      <li><a href="/tags/">标签</a></li>
+<li><a href="/关于/">关于</a></li>      <li><a href="/rss.xml">订阅</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button id="search-open" class="icon-btn" aria-label="搜索" aria-haspopup="dialog">🔍</button>
+      <button id="theme-toggle" class="icon-btn" aria-label="切换明暗主题" title="切换明暗">🌙</button>
+    </div>
+  </nav>
+</header>
+<main id="main" class="container">
+<article class="post">
+  <header class="post-head">
+    <p class="post-route"><a href="/">首页</a> › <a href="/tags/">标签</a> › <a href="/archives/">归档</a></p>
+    <h1 class="post-title">方寸之地：AI Agent 本地部署小模型综述</h1>
+    <div class="post-meta">
+      <time datetime="2026-09-18">2026年09月18日</time>
+      <span>约 4 分钟</span>
+<span>无名散修</span>    </div>
+    <ul class="tag-list" aria-label="标签">
+<li><a class="tag" href="/tags/ai/">AI</a></li><li><a class="tag" href="/tags/小模型/">小模型</a></li><li><a class="tag" href="/tags/本地部署/">本地部署</a></li><li><a class="tag" href="/tags/量化/">量化</a></li><li><a class="tag" href="/tags/边缘计算/">边缘计算</a></li>    </ul>
+  </header>
+  <div class="post-layout">
+    <div class="post-body prose">
+      <blockquote>
+<p>大法虽强，法不可轻移；移入方寸之间，方为已用。</p>
+</blockquote>
+<!-- more -->
+
+<h2 id="一为什么小模型本地部署突然重要">一、为什么「小模型本地部署」突然重要</h2>
+<p>两年前的共识是「能力在云端」,但 2026 年的格局已经反转:</p>
+<ol>
+<li><strong>隐私与合规</strong>:数据不出门成为硬约束——医疗、政务、企业知识库,明文数据不能上云。</li>
+<li><strong>延迟与成本</strong>:端侧推理零网络延迟、零按 token 计费,对 Agent 的长任务循环尤其重要。</li>
+<li><strong>模型变小但变强</strong>:蒸馏与量化让 1.5B~9B 的小语言模型(SLM)在多数任务上"够用"——这正是 Agent 里调用最频繁的那一层。</li>
+</ol>
+<h2 id="二硬事实量化革命改变了什么">二、硬事实:量化革命改变了什么</h2>
+<p>一个常被引用的数字对比:</p>
+<blockquote>
+<p>一个 70 亿参数模型,FP32 需要约 <strong>28GB</strong> 显存;4-bit 量化后降到 <strong>不足 4GB</strong>,质量损失在多数任务上几乎不可感知。</p>
+</blockquote>
+<p>这让本地推理从「企业 GPU 才能玩」变成「M 系列 MacBook、游戏级 RTX、甚至高内存纯 CPU 机器都能跑」。量化(特别是 <strong>GGUF 格式的 Q4_K_M</strong> 级别)是这一切的基石。</p>
+<h2 id="三运行时全景六大选择">三、运行时全景:六大选择</h2>
+<p>2026 年边缘 LLM 运行时格局(据 Edge LLM Runtime Stack 与 Building Language AI 的梳理):</p>
+<table>
+<thead>
+<tr>
+<th>运行时</th>
+<th>硬件倾向</th>
+<th>定位</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>llama.cpp</strong></td>
+<td>通用,CPU 优先</td>
+<td>最可移植的 C/C++ 运行时,GGUF 格式</td>
+<td>能跑就行,兼容性第一</td>
+</tr>
+<tr>
+<td><strong>Ollama</strong></td>
+<td>通用</td>
+<td>llama.cpp 的便捷封装 + HTTP API</td>
+<td>原型与开发者工作流的事实标准</td>
+</tr>
+<tr>
+<td><strong>MLX</strong></td>
+<td>Apple Silicon</td>
+<td>为统一内存专门打造</td>
+<td>M 系列 Mac,14B 以下模型比 llama.cpp 快 20%~87%</td>
+</tr>
+<tr>
+<td><strong>ExecuTorch</strong></td>
+<td>移动端</td>
+<td>PyTorch → 手机的运行时</td>
+<td>Android/iOS 端上 Agent</td>
+</tr>
+<tr>
+<td><strong>WebLLM</strong></td>
+<td>浏览器</td>
+<td>WebGPU 在浏览器里推理</td>
+<td>无安装、纯网页的 Agent 界面</td>
+</tr>
+<tr>
+<td><strong>Qualcomm AI Hub</strong></td>
+<td>Snapdragon NPU</td>
+<td>高通 NPU 工具链</td>
+<td>骁龙设备的端侧 Agent</td>
+</tr>
+</tbody>
+</table>
+<p>关键提醒:量化格式不能随便跨运行时迁移。GGUF 在 CPU/Jetson/Apple Silicon 间可移植,但 <strong>NVFP4 这类 Blackwell 专用格式就不会在 Orin 上跑</strong>。选型时要先定硬件,再定格式。</p>
+<h2 id="四模型侧的三板斧">四、模型侧的三板斧</h2>
+<p>从系统综述(On-device LLMs: a survey of model compression and system optimization)看,本地小模型的能力来自三条技术线:</p>
+<ol>
+<li><strong>量化(Quantization)</strong>:4-bit/2-bit 权重量化,GGUF/QAT 等,是"省显存"的第一功臣。</li>
+<li><strong>蒸馏(Distillation)</strong>:大模型把能力压缩进小参数模型,让 SLM"继承"大模型的行为。</li>
+<li><strong>剪枝与低秩适配(LoRA)</strong>:进一步瘦身 + 低成本微调,让模型贴合你的领域。</li>
+</ol>
+<p>这三者往往<strong>组合使用</strong>,而非单选。</p>
+<h2 id="五硬件边界cpugpunpu-怎么选">五、硬件边界:CPU、GPU、NPU 怎么选</h2>
+<ul>
+<li><strong>CPU 为主</strong>:llama.cpp + GGUF,高内存即可跑 7B~14B,速度 5~20 tok/s,够日常问答与知识库检索。</li>
+<li><strong>GPU 加速</strong>:游戏级显卡即可流畅跑 14B 甚至 32B 量化模型,是「本地 Agent 主力机」的首选。</li>
+<li><strong>NPU 崛起</strong>:2026 年 Windows 的 <strong>ONNX Runtime + Qualcomm QNN</strong> 让 NPU 开发走上正轨;NPU 擅长矩阵运算,能效比高,但生态与格式仍在收敛。</li>
+<li><strong>Apple Silicon</strong>:统一内存架构 + MLX,是目前「端侧体验最好」的组合。</li>
+</ul>
+<h2 id="六给-agent-落地者的路线图">六、给 Agent 落地者的路线图</h2>
+<ol>
+<li><strong>先定硬件边界</strong>,再选运行时:Apple Silicon 上 MLX、通用桌面 Ollama/llama.cpp、手机 ExecuTorch、浏览器 WebLLM。</li>
+<li><strong>从 7B 级量化模型起步</strong>(GGUF Q4_K_M),验证任务质量;不够再升 14B,别一上来就冲大。</li>
+<li><strong>嵌入模型与生成模型分开</strong>:嵌入用更轻的(如 nomic-embed-text),生成用稍大的,性价比最优。</li>
+<li><strong>与本地知识库/RAG 组合</strong>(见《AI 本地个人知识库建设》):小模型 + 检索,是「本地 Agent」最务实的组合。</li>
+<li><strong>评估闭环不可省</strong>:本地模型差距用你的真实任务集验证,别用榜单结论代替。</li>
+</ol>
+<h2 id="七结语">七、结语</h2>
+<p>2026 年,「把 Agent 跑在本地」不再是妥协,而是一种<strong>架构选择</strong>:隐私、成本、延迟、可控,全都要回来了。量化与蒸馏把大模型的能力压缩进方寸之间,而你的任务,是选对那枚「适合自己的丹」——不是越大越好,而是<strong>在你能掌控的硬件上,跑出可信、可验证的结果</strong>。</p>
+<p>大道至简,方寸即是乾坤。</p>
+    </div>
+    <aside class="toc" aria-label="章节目录">
+      <p class="toc-title">卷目</p>
+      <ol>
+        <li class="toc-l2"><a href="#一为什么小模型本地部署突然重要">一、为什么「小模型本地部署」突然重要</a></li>
+        <li class="toc-l2"><a href="#二硬事实量化革命改变了什么">二、硬事实:量化革命改变了什么</a></li>
+        <li class="toc-l2"><a href="#三运行时全景六大选择">三、运行时全景:六大选择</a></li>
+        <li class="toc-l2"><a href="#四模型侧的三板斧">四、模型侧的三板斧</a></li>
+        <li class="toc-l2"><a href="#五硬件边界cpugpunpu-怎么选">五、硬件边界:CPU、GPU、NPU 怎么选</a></li>
+        <li class="toc-l2"><a href="#六给-agent-落地者的路线图">六、给 Agent 落地者的路线图</a></li>
+        <li class="toc-l2"><a href="#七结语">七、结语</a></li>
+      </ol>
+    </aside>
+  </div>
+  <section class="related" aria-label="相关文章">
+    <h2>他山之石 · 相关文章</h2>
+    <div class="related-list">
+      <a class="related-card" href="/posts/ai本地个人知识库建设/">
+        <span class="related-date">2026-09-18</span>
+        <span class="related-title">问道阁：AI 加持的本地个人知识库建设指南</span>
+      </a>
+      <a class="related-card" href="/posts/ai总体态势综述/">
+        <span class="related-date">2026-09-18</span>
+        <span class="related-title">问道AI：2026 年人工智能总体态势综述</span>
+      </a>
+      <a class="related-card" href="/posts/ai-agent辅助编程进展/">
+        <span class="related-date">2026-09-18</span>
+        <span class="related-title">御剑炼丹：AI Agent 辅助编程的技术进展综述</span>
+      </a>
+    </div>
+  </section>
+  <nav class="post-nav" aria-label="上一篇/下一篇">
+<a class="post-nav-prev" href="/posts/ai-agent框架综述/">← 众仙摆阵：AI Agent 框架全景综述</a><a class="post-nav-next" href="/posts/ai-agent-harness综述/">铸甲驭灵：AI Agent 的 Harness 工程综述 →</a>  </nav>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="cloud-divider" aria-hidden="true">
+    <svg viewBox="0 0 480 18" role="presentation"><use href="#cloud-symbol" x="0"/><use href="#cloud-symbol" x="144"/><use href="#cloud-symbol" x="288"/><use href="#cloud-symbol" x="432" transform="scale(-1,1) translate(-480,0)"/></svg>
+  </div>
+  <p class="footer-line">剑气纵横三万里，一剑光寒十九州。</p>
+  <p class="footer-meta">© 2026 无名散修 · 由 post-generator 铸造 · <a href="/atom.xml">Atom</a> / <a href="/rss.xml">RSS</a></p>
+</footer>
+<div id="search-panel" class="search-panel" hidden aria-hidden="true">
+  <div class="search-box" role="dialog" aria-modal="true" aria-labelledby="search-title">
+    <h2 id="search-title" class="visually-hidden">站内搜索</h2>
+    <div class="search-field">
+      <label class="visually-hidden" for="search-input">搜索关键词</label>
+      <input id="search-input" type="search" placeholder="搜剑诀、丹方、见闻…" autocomplete="off">
+      <button id="search-close" class="icon-btn" aria-label="关闭搜索">✕</button>
+    </div>
+    <p id="search-status" class="search-status" role="status"></p>
+    <ul id="search-results" class="search-results"></ul>
+  </div>
+</div>
+<script src="/assets/search-index.js" defer></script>
+<script src="/assets/js/theme.js" defer></script>
+<script src="/assets/js/search.js" defer></script>
+<script src="/assets/js/main.js" defer></script>
+</body>
+</html>

@@ -4,174 +4,560 @@
   <subtitle>一介散修的问道笔记：剑诀、丹方与山海见闻</subtitle>
   <link href="https://wsn-star.github.io"/>
   <link href="https://wsn-star.github.io/atom.xml" rel="self" type="application/atom+xml"/>
-  <updated>2026-09-15T00:00:00-04:00</updated>
+  <updated>2026-09-18T00:00:00-04:00</updated>
   <id>https://wsn-star.github.io/</id>
   <entry>
-    <title>阵图入门：Python 与 JavaScript 的召唤咒语</title>
-    <link href="https://wsn-star.github.io/posts/%E9%98%B5%E5%9B%BE%E5%85%A5%E9%97%A8/"/>
-    <id>https://wsn-star.github.io/posts/%E9%98%B5%E5%9B%BE%E5%85%A5%E9%97%A8/</id>
-    <published>2026-09-15T00:00:00-04:00</published>
-    <updated>2026-09-15T00:00:00-04:00</updated>
-<category term="代码"/><category term="修行"/><category term="阵法"/>    <summary>修仙界亦有代码。以 Python 布阵、以 JavaScript 唤灵，各有一段入门咒语，附注释以示后人。</summary>
+    <title>问道阁：AI 加持的本地个人知识库建设指南</title>
+    <link href="https://wsn-star.github.io/posts/ai%E6%9C%AC%E5%9C%B0%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E5%BA%93%E5%BB%BA%E8%AE%BE/"/>
+    <id>https://wsn-star.github.io/posts/ai%E6%9C%AC%E5%9C%B0%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E5%BA%93%E5%BB%BA%E8%AE%BE/</id>
+    <published>2026-09-18T00:00:00-04:00</published>
+    <updated>2026-09-18T00:00:00-04:00</updated>
+<category term="AI"/><category term="知识库"/><category term="RAG"/><category term="本地部署"/>    <summary>从 Karpathy 的 LLM Wiki 模式到本地 RAG 与图检索，一文讲清 2026 年「完全本地、隐私安全、越用越聪明」的个人知识库怎么搭。</summary>
     <content type="html">&lt;blockquote&gt;
-&lt;p&gt;阵图者，代码之形也；代码者，阵图之魂也。&lt;/p&gt;
+&lt;p&gt;笔记之弊，在于积而不化。AI 加持，方能使藏经阁自行呼吸。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;!-- more --&gt;
 
-&lt;h2 id=&#34;一python御剑飞行矩阵&#34;&gt;一、Python：御剑飞行矩阵&lt;/h2&gt;
-&lt;p&gt;Python 布阵，讲究一气呵成。此阵可将剑气化为数组，一息千里：&lt;/p&gt;
-&lt;div class=&#34;codehilite&#34;&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;fly_sword&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;points&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;list&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;tuple&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;float&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;float&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]])&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;list&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;tuple&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;float&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;float&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]:&lt;/span&gt;
-&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;sd&#34;&gt;&#34;&#34;&#34;将剑气按仙力矩阵归一化，供御剑飞行使用。&#34;&#34;&#34;&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;not&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;points&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;raise&lt;/span&gt; &lt;span class=&#34;ne&#34;&gt;ValueError&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&#34;剑气不能为空&#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-
-    &lt;span class=&#34;n&#34;&gt;xs&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;points&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;ys&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;points&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;x_min&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;x_max&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;min&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;xs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;max&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;xs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;y_min&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;y_max&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;min&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ys&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;max&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ys&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-
-    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;norm&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;float&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;lo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;float&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;hi&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;float&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;float&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;x&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;lo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;/&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;hi&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;lo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;hi&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;lo&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;mf&#34;&gt;0.0&lt;/span&gt;
-
-    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;
-        &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;norm&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;x_min&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;x_max&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;norm&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;y&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;y_min&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;y_max&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;y&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;points&lt;/span&gt;
-    &lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
-
-
-&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;vm&#34;&gt;__name__&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&#34;__main__&#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;trail&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;10&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;20&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;30&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;60&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)]&lt;/span&gt;
-    &lt;span class=&#34;nb&#34;&gt;print&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fly_sword&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;trail&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;# [(0.0, 0.0), (0.33, 0.33), (1.0, 1.0)]&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;要点：&lt;code&gt;list[tuple[...]]&lt;/code&gt; 注解、列表推导式、&lt;code&gt;if __name__ == &#34;__main__&#34;&lt;/code&gt;，皆是御剑飞行的基本功。&lt;/p&gt;
-&lt;h2 id=&#34;二javascript召唤灵兽的符咒&#34;&gt;二、JavaScript：召唤灵兽的符咒&lt;/h2&gt;
-&lt;p&gt;JavaScript 布阵，讲究响应之快。此符可唤一只灵猫，闻声而动：&lt;/p&gt;
-&lt;div class=&#34;codehilite&#34;&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class=&#34;kd&#34;&gt;const&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;spiritCat&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&#34;山君&#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
-&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;realm&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&#34;金丹期&#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
-&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;speak&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;console&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;log&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;`&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;this&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;：喵了个咪，灵气不足。`&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
-&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;},&lt;/span&gt;
-&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;async&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;fetchSpirit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;api&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;const&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;res&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;await&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;fetch&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;api&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
-&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;!&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;res&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ok&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;throw&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;ow&#34;&gt;new&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;ne&#34;&gt;Error&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;`召唤失败：&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;res&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;status&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;`&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
-&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;return&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;res&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;json&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt;
-&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;},&lt;/span&gt;
-&lt;span class=&#34;p&#34;&gt;};&lt;/span&gt;
-
-&lt;span class=&#34;nb&#34;&gt;document&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;querySelector&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&#34;#summon-btn&#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;addEventListener&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&#34;click&#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;spiritCat&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;speak&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt;
-&lt;span class=&#34;p&#34;&gt;});&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;要点：对象字面量、模板字符串、&lt;code&gt;async/await&lt;/code&gt;、可选链 &lt;code&gt;?.&lt;/code&gt;，皆是唤灵入门的七步功。&lt;/p&gt;
-&lt;h2 id=&#34;三两者之辨&#34;&gt;三、两者之辨&lt;/h2&gt;
+&lt;h2 id=&#34;一为什么是本地知识库&#34;&gt;一、为什么是「本地」知识库&lt;/h2&gt;
+&lt;p&gt;2026 年,把个人笔记交给云端 AI 的风险已经非常具体:数据出境、厂商锁定、以及「你的知识被拿去喂了别人的模型」。与此同时,本地推理能力大幅提升——&lt;strong&gt;Ollama 已成为事实上的本地推理层,llama.cpp 系的 GGUF 量化模型在消费级硬件上即可流畅运行&lt;/strong&gt;。于是「本地知识库 + 本地模型」从极客玩具变成了严肃方案。&lt;/p&gt;
+&lt;p&gt;核心理念只有一句:&lt;strong&gt;你的数据、你的模型、你的索引,全部留在自己机器上。&lt;/strong&gt;&lt;/p&gt;
+&lt;h2 id=&#34;二三种主流架构按需选择&#34;&gt;二、三种主流架构,按需选择&lt;/h2&gt;
+&lt;h3 id=&#34;21-纯-rag-检索增强生成入门最快&#34;&gt;2.1 纯 RAG 检索增强生成(入门最快)&lt;/h3&gt;
+&lt;p&gt;把笔记切块 → 本地嵌入模型向量化 → 存入向量库 → 提问时检索相关块喂给本地 LLM。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;代表工具:&lt;strong&gt;Obsidian + Ollama/LM Studio + 本地 RAG 插件&lt;/strong&gt;(如 obsidian-rag,支持 PDF 与 Markdown 语义检索、带引用的流式回答,完全离线,无 API key)。&lt;/li&gt;
+&lt;li&gt;优点:落地快,20 分钟可跑通。&lt;/li&gt;
+&lt;li&gt;缺点:对「跨笔记的关系」理解弱,知识仍是孤岛。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;22-llm-wiki-模式20252026-最受关注&#34;&gt;2.2 LLM Wiki 模式(2025—2026 最受关注)&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;Andrej Karpathy 提出的 LLM Wiki 思路&lt;/strong&gt;:把原始笔记丢给 LLM,由它抽取概念、自动生成相互链接的 wiki 页面,形成一个「自组织、越用越密」的知识图谱。2026 年已出现一批本地化实现:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Obsidian LLM Wiki Local&lt;/strong&gt;:丢入 Markdown → 本地模型抽取概念 → 自动建链补文,还可拒绝草稿并说明原因,下一轮编译吸收你的反馈。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Athena&lt;/strong&gt;:三层架构(原始 / wiki / schema),能摄入 URL、论文、GitHub 仓库、截图与视频,由 LLM 合成为结构化页面并与既有知识交叉引用。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Claude Obsidian&lt;/strong&gt;:面向 Claude Code 的自组织「第二大脑」,任何来源都会被读取、链接、归档进一个互联的纯 Markdown 知识图谱。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Karpathy 的观点被反复引用:一个 Markdown 知识库只有在「有不倦的维护者」时才能存活——而 AI 恰好可以承担这种维护。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;23-graph-rag进阶关系至上&#34;&gt;2.3 Graph RAG(进阶,关系至上)&lt;/h3&gt;
+&lt;p&gt;在 RAG 之上显式构建实体-关系三元组,检索时走图,回答跨主题问题更准。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;代表工具:&lt;strong&gt;Kwipu&lt;/strong&gt;——完全本地图检索引擎,从 wikilinks 与 YAML frontmatter 抽取三元组,混合检索(向量 + BM25 + 时间),多语言,跑在 Ollama 上。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Uru&lt;/strong&gt;——Obsidian 插件,把整个库变成可查询的知识图谱 + 语义索引,回答带精确笔记引用。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cortex&lt;/strong&gt;——本地优先的 MCP 服务器,给任意 LLM 客户端语义 + 字面双重检索与全库读写,嵌入走 Ollama、向量走 sqlite-vec。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;三2026-年的关键构件&#34;&gt;三、2026 年的关键构件&lt;/h2&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;阵法&lt;/th&gt;
-&lt;th&gt;心法&lt;/th&gt;
-&lt;th&gt;擅长&lt;/th&gt;
+&lt;th&gt;层&lt;/th&gt;
+&lt;th&gt;推荐选择&lt;/th&gt;
+&lt;th&gt;说明&lt;/th&gt;
 &lt;/tr&gt;
 &lt;/thead&gt;
 &lt;tbody&gt;
 &lt;tr&gt;
-&lt;td&gt;Python&lt;/td&gt;
-&lt;td&gt;内丹之道&lt;/td&gt;
-&lt;td&gt;数据、推演、山门杂务&lt;/td&gt;
+&lt;td&gt;笔记格式&lt;/td&gt;
+&lt;td&gt;纯 Markdown&lt;/td&gt;
+&lt;td&gt;不锁定、可迁移、可版本管理&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td&gt;JavaScript&lt;/td&gt;
-&lt;td&gt;符箓之道&lt;/td&gt;
-&lt;td&gt;交互、呼应、即时相应&lt;/td&gt;
+&lt;td&gt;本地模型&lt;/td&gt;
+&lt;td&gt;Ollama / LM Studio&lt;/td&gt;
+&lt;td&gt;事实标准的本地推理入口&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;嵌入模型&lt;/td&gt;
+&lt;td&gt;Ollama 内置(如 nomic-embed-text)&lt;/td&gt;
+&lt;td&gt;无需额外服务&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;向量库&lt;/td&gt;
+&lt;td&gt;sqlite-vec / Chroma&lt;/td&gt;
+&lt;td&gt;轻量、随笔记库走&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;连接层&lt;/td&gt;
+&lt;td&gt;MCP(如 Cortex)&lt;/td&gt;
+&lt;td&gt;让任意 LLM 客户端都能读写你的库&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;检索增强&lt;/td&gt;
+&lt;td&gt;混合检索(向量+BM25+时间)&lt;/td&gt;
+&lt;td&gt;兼顾语义与关键词精确命中&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;同修双道者，谓之全栈散修。愿道友早日飞升。&lt;/p&gt;</content>
+&lt;h2 id=&#34;四落地路线图一周内可完成&#34;&gt;四、落地路线图(一周内可完成)&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;第 1 天&lt;/strong&gt;:装 Ollama,拉一个 7B~14B 模型;建纯 Markdown 笔记目录,用 Git 管理。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;第 2 天&lt;/strong&gt;:上最小 RAG(Obsidian + 本地 RAG 插件),把 PDF 和旧笔记喂进去,验证「问库有答、答有出处」。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;第 3~4 天&lt;/strong&gt;:升级 LLM Wiki 模式,让本地模型把散笔记抽成互链 wiki,观察知识图自动长密。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;第 5 天&lt;/strong&gt;:若你有跨主题的重度问答需求,加 Graph RAG(Kwipu 或 Uru),测试「A 项目与 B 项目之间的关系」这类问题。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;第 6 天起&lt;/strong&gt;:把「摄入 → 抽链 → 问答」固化成一个脚本(或 MCP 服务),每次丢进新素材即自动入库。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;五避坑清单&#34;&gt;五、避坑清单&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;别把原始 PDF 当检索单元&lt;/strong&gt;:按节切块、保留标题上下文,否则语义检索稀碎。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;嵌入与问答模型分开选&lt;/strong&gt;:嵌入用轻量模型,生成用稍大模型,性价比最高。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;一定要有引用&lt;/strong&gt;:任何回答都要能点回原始笔记,否则知识库会悄悄「编」。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;定期人工修剪&lt;/strong&gt;:AI 维护 ≠ 放任自流,每周删冗余、合并重复,知识库才会复利增长。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;本地 ≠ 不备份&lt;/strong&gt;:Git 仓库 + 冷备,双保险。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;六结语&#34;&gt;六、结语&lt;/h2&gt;
+&lt;p&gt;2026 年的个人知识库,不再是「收集箱」,而是&lt;strong&gt;一座有 AI 书童常驻打理、自己会生长链接、只属于你的藏经阁&lt;/strong&gt;。从最小 RAG 起步,向 LLM Wiki 与 Graph RAG 演进,你的笔记会从「存档」变成「资产」。&lt;/p&gt;
+&lt;p&gt;记住那句话:数据不出门,智慧自内生。&lt;/p&gt;</content>
   </entry>
   <entry>
-    <title>山海见闻 · 东海篇</title>
-    <link href="https://wsn-star.github.io/posts/%E5%B1%B1%E6%B5%B7%E8%A7%81%E9%97%BB%E4%B8%9C%E6%B5%B7%E7%AF%87/"/>
-    <id>https://wsn-star.github.io/posts/%E5%B1%B1%E6%B5%B7%E8%A7%81%E9%97%BB%E4%B8%9C%E6%B5%B7%E7%AF%87/</id>
-    <published>2026-06-30T00:00:00-04:00</published>
-    <updated>2026-06-30T00:00:00-04:00</updated>
-<category term="见闻"/><category term="游记"/>    <summary>乘槎浮海三月，所见所闻，略记一二：会说话的龟、会下雨的云、不会沉的海市。</summary>
+    <title>问道AI：2026 年人工智能总体态势综述</title>
+    <link href="https://wsn-star.github.io/posts/ai%E6%80%BB%E4%BD%93%E6%80%81%E5%8A%BF%E7%BB%BC%E8%BF%B0/"/>
+    <id>https://wsn-star.github.io/posts/ai%E6%80%BB%E4%BD%93%E6%80%81%E5%8A%BF%E7%BB%BC%E8%BF%B0/</id>
+    <published>2026-09-18T00:00:00-04:00</published>
+    <updated>2026-09-18T00:00:00-04:00</updated>
+<category term="AI"/><category term="综述"/><category term="大模型"/>    <summary>以斯坦福 AI Index 2026 为主线，梳理过去一年 AI 的真实进展、能力瓶颈、经济影响与治理困局，给出一名从业者真正能用的判断框架。</summary>
     <content type="html">&lt;blockquote&gt;
-&lt;p&gt;东海之外，有大壑焉，实惟无底之谷。&lt;/p&gt;
+&lt;p&gt;旁观者只见翻云覆雨，修道人当辨大势所趋。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;!-- more --&gt;
 
-&lt;h2 id=&#34;会说话的龟&#34;&gt;会说话的龟&lt;/h2&gt;
-&lt;h2 id=&#34;会下雨的云&#34;&gt;会下雨的云&lt;/h2&gt;
-&lt;h2 id=&#34;不会沉的海市&#34;&gt;不会沉的海市&lt;/h2&gt;
-&lt;p&gt;见闻俱真，姑妄记之。&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>丹方：清心丸的三味药引</title>
-    <link href="https://wsn-star.github.io/posts/%E6%B8%85%E5%BF%83%E4%B8%B8%E7%9A%84%E4%B8%89%E5%91%B3%E8%8D%AF%E5%BC%95/"/>
-    <id>https://wsn-star.github.io/posts/%E6%B8%85%E5%BF%83%E4%B8%B8%E7%9A%84%E4%B8%89%E5%91%B3%E8%8D%AF%E5%BC%95/</id>
-    <published>2026-02-14T00:00:00-05:00</published>
-    <updated>2026-02-14T00:00:00-05:00</updated>
-<category term="丹方"/><category term="修行"/>    <summary>心浮则气逆，气逆则丹败。清心丸重在药引，而非主药分量。</summary>
-    <content type="html">&lt;blockquote&gt;
-&lt;p&gt;心浮则气逆，气逆则丹败。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;!-- more --&gt;
-
-&lt;h2 id=&#34;药引三味&#34;&gt;药引三味&lt;/h2&gt;
-&lt;p&gt;一曰&lt;strong&gt;竹沥&lt;/strong&gt;，二曰&lt;strong&gt;莲子心&lt;/strong&gt;，三曰&lt;strong&gt;远志&lt;/strong&gt;。&lt;/p&gt;
-&lt;h2 id=&#34;火候&#34;&gt;火候&lt;/h2&gt;
-&lt;p&gt;文火三昼夜，武火一炷香。&lt;/p&gt;
+&lt;h2 id=&#34;一开篇为什么需要总体综述&#34;&gt;一、开篇：为什么需要「总体综述」&lt;/h2&gt;
+&lt;p&gt;每隔半年，AI 领域便换一副面貌。模型榜单翻新、创业公司更替、企业战略摇摆——若只盯着热点，很容易把「宣传的进展」误当成「真实的能力」。本篇以&lt;strong&gt;斯坦福 AI Index 2026&lt;/strong&gt;(第九版年度报告,arXiv:2606.15708)为主干,结合产业一线观察,梳理三个问题:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;过去一年 AI 到底强了多少?&lt;/li&gt;
+&lt;li&gt;卡在哪,为什么?&lt;/li&gt;
+&lt;li&gt;这些变化对普通开发者/企业意味着什么?&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;二硬进展能力确实在快速跃升&#34;&gt;二、硬进展:能力确实在快速跃升&lt;/h2&gt;
+&lt;h3 id=&#34;21-基准纷纷被喂饱&#34;&gt;2.1 基准纷纷被&#34;喂饱&#34;&lt;/h3&gt;
+&lt;p&gt;AI Index 2026 明确指出:&lt;strong&gt;前沿模型的能力增长,已经跑在了检基准测基准(lookup benchmark)的前面&lt;/strong&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在 &lt;strong&gt;Humanity&#39;s Last Exam&lt;/strong&gt;(一个刻意设计得极难、对人类专家有利的基准)上,前沿模型&lt;strong&gt;一年内提升了 30 个百分点&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;大量本应「难住 AI 好几年」的评测,几个月内就被顶到饱和,使得这些基准失去区分度。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;把话说直白:过去我们用「AI 能不能过某考试」来度量能力,现在考试题被 AI 越刷越快,评估体系反而成了短板。&lt;/p&gt;
+&lt;h3 id=&#34;22-四大方向的跃升&#34;&gt;2.2 四大方向的跃升&lt;/h3&gt;
+&lt;p&gt;从 AI Index 与其他综述(A Survey of Large Language Models 等)看,2025 的进展集中在这几根主线:&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;药引&lt;/th&gt;
-&lt;th&gt;用量&lt;/th&gt;
-&lt;th&gt;功效&lt;/th&gt;
+&lt;th&gt;方向&lt;/th&gt;
+&lt;th&gt;关键变化&lt;/th&gt;
+&lt;th&gt;对普通人的影响&lt;/th&gt;
 &lt;/tr&gt;
 &lt;/thead&gt;
 &lt;tbody&gt;
 &lt;tr&gt;
-&lt;td&gt;竹沥&lt;/td&gt;
-&lt;td&gt;三钱&lt;/td&gt;
-&lt;td&gt;降心火&lt;/td&gt;
+&lt;td&gt;推理(reasoning)&lt;/td&gt;
+&lt;td&gt;从「生成」转向「深思」,思维链、验证、自我修正成为常态&lt;/td&gt;
+&lt;td&gt;能处理多步骤、需要严谨推导的任务&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td&gt;莲子心&lt;/td&gt;
-&lt;td&gt;二钱&lt;/td&gt;
-&lt;td&gt;安神&lt;/td&gt;
+&lt;td&gt;多模态&lt;/td&gt;
+&lt;td&gt;图像/视频/语音/代码统一进一个模型&lt;/td&gt;
+&lt;td&gt;不再需要拼装多个单模态工具&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td&gt;远志&lt;/td&gt;
-&lt;td&gt;一钱&lt;/td&gt;
-&lt;td&gt;通窍&lt;/td&gt;
+&lt;td&gt;智能体(agentic)&lt;/td&gt;
+&lt;td&gt;从「问答」走向「执行」,会调用工具、操作系统&lt;/td&gt;
+&lt;td&gt;能从&#34;给你答案&#34;变成&#34;替你做&#34;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;蒸馏与小模型&lt;/td&gt;
+&lt;td&gt;大模型能力被蒸馏进小参数量模型&lt;/td&gt;
+&lt;td&gt;消费级硬件也能本地运行&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;h2 id=&#34;成丹&#34;&gt;成丹&lt;/h2&gt;
-&lt;p&gt;成丹之后，静置七日，谓之「养丹」。&lt;/p&gt;</content>
+&lt;h3 id=&#34;23-一个被低估的数字&#34;&gt;2.3 一个被低估的数字&lt;/h3&gt;
+&lt;p&gt;AI Index 2026 &lt;strong&gt;首次&lt;/strong&gt;给出了生成式 AI 的经济价值测算,并开始量化其对劳动力市场的影响——过去只是&#34;讨论&#34;,现在有了&#34;估计&#34;。同时新增了 &lt;strong&gt;AI 主权(sovereignty)&lt;/strong&gt; 分析框架,以及&lt;strong&gt;科学与医学&lt;/strong&gt;两个独立章节,反映 AI 已从「实验室玩具」变成「产业基础设施」。&lt;/p&gt;
+&lt;h2 id=&#34;三深层回落进步背后的三大隐忧&#34;&gt;三、深层回落:进步背后的三大隐忧&lt;/h2&gt;
+&lt;h3 id=&#34;31-能力与治理测评的鸿沟&#34;&gt;3.1 能力与治理/测评的「鸿沟」&lt;/h3&gt;
+&lt;p&gt;AI Index 2026 的核心论断其实是这句:&lt;strong&gt;AI 能做什么,与我们有没有准备好管理它之间存在裂痕&lt;/strong&gt;。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;治理框架、评估方法、教育体系、数据基础设施……都在追赶技术本身的脚步。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;这不是一句空话,而是每一章都复现的模式:能力先到,规则后到,落在中间的是使用者的风险敞口。&lt;/p&gt;
+&lt;h3 id=&#34;32-基准可信度危机&#34;&gt;3.2 基准可信度危机&lt;/h3&gt;
+&lt;p&gt;既然 benchmark 纷纷饱和,「某某模型 SWE-bench 第一」这类宣传就越来越难采信。行业已经出现反面:OpenAI 自己一度已回撤对 SWE-bench Verified(软件工程基准)的依赖,因为发现它能被&#34;奖励黑客&#34;(通过泄漏题目/作弊拿分)污染。&lt;strong&gt;看榜下单的时代结束了。&lt;/strong&gt;&lt;/p&gt;
+&lt;h3 id=&#34;33-数据与评测主权&#34;&gt;3.3 数据与评测主权&lt;/h3&gt;
+&lt;p&gt;「AI 主权」的提出,指向一个更本质的问题:&lt;strong&gt;数据、算力、评分标准掌握在谁手里&lt;/strong&gt;。这不只是国与国的事,也是企业、甚至个人开发者要正视的:「别把所有决策外包给一个你无法验证质量的第三方。」&lt;/p&gt;
+&lt;h2 id=&#34;四给从业者的可操作建议&#34;&gt;四、给从业者的可操作建议&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;别再迷信单一评测指标&lt;/strong&gt;。挑工具/模型时,用「自己的真实任务 + 自己的数据」跑一遍,胜过任何榜单。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;把「评估」当一等人对待&lt;/strong&gt;。受 AI 的能力评测基准会逐渐失效,你的项目也该有自己的一套验证回路。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;重视本地与离线能力&lt;/strong&gt;。AI 主权与隐私趋势下,能本地跑的模型与能离线用的知识库,会成为长期竞争力。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;警惕「能力外包成依赖」&lt;/strong&gt;。当你把一个决策交给 AI,要确保你还有不靠它也能复核的路径。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;五结语&#34;&gt;五、结语&lt;/h2&gt;
+&lt;p&gt;2025—2026 这一年,AI 完成了从「会说话的模型」到「会干活的系统」的跃迁。能力继续向上,但可信度、测评、治理这层「地基」却明显滞后。真正的竞争力,不在于抢最火的新模型,而在于:你能不能在能力之上,建起诚实、可验证、能自主掌控的系统。&lt;/p&gt;
+&lt;p&gt;这,才是这一年的最大课题。&lt;/p&gt;</content>
   </entry>
   <entry>
-    <title>御剑术入门：从养剑到起诀</title>
-    <link href="https://wsn-star.github.io/posts/%E5%BE%A1%E5%89%91%E6%9C%AF%E5%85%A5%E9%97%A8/"/>
-    <id>https://wsn-star.github.io/posts/%E5%BE%A1%E5%89%91%E6%9C%AF%E5%85%A5%E9%97%A8/</id>
-    <published>2026-01-08T00:00:00-05:00</published>
-    <updated>2026-01-08T00:00:00-05:00</updated>
-<category term="剑诀"/><category term="修行"/>    <summary>剑为心之影。记下养剑、引气、起诀三步工夫，与初学者最容易犯的七种错。</summary>
+    <title>御剑炼丹：AI Agent 辅助编程的技术进展综述</title>
+    <link href="https://wsn-star.github.io/posts/ai-agent%E8%BE%85%E5%8A%A9%E7%BC%96%E7%A8%8B%E8%BF%9B%E5%B1%95/"/>
+    <id>https://wsn-star.github.io/posts/ai-agent%E8%BE%85%E5%8A%A9%E7%BC%96%E7%A8%8B%E8%BF%9B%E5%B1%95/</id>
+    <published>2026-09-18T00:00:00-04:00</published>
+    <updated>2026-09-18T00:00:00-04:00</updated>
+<category term="AI"/><category term="Agent"/><category term="编程"/><category term="SWE-bench"/>    <summary>从补全到自治编码，2025—2026 年 AI 编程助手完成了从「帮你打字」到「替你开车」的跃迁。一文拆解 Claude Code、Cursor、Composer 的架构演进、基准真相与落地要点。</summary>
     <content type="html">&lt;blockquote&gt;
-&lt;p&gt;剑为心之影，心正则剑正，心浮则剑滞。&lt;/p&gt;
+&lt;p&gt;昔日用剑者，今以剑御人。代码之灵已成，驾驭之道在焉。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;!-- more --&gt;
 
-&lt;h2 id=&#34;养剑&#34;&gt;养剑&lt;/h2&gt;
-&lt;p&gt;剑非器也，亦非兵也。养剑三日，不过朝夕拂拭，令剑与人气机相合。&lt;/p&gt;
-&lt;p&gt;引气
-引气如引水，贵缓不贵急。&lt;/p&gt;
-&lt;p&gt;起诀
-起诀口诀：藏锋、蓄势、出鞘、归鞘。&lt;/p&gt;
-&lt;p&gt;[!note] 初学者七错：心急、贪多、好斗、轻敌、忘归、恋战、不敬师长。&lt;/p&gt;
-&lt;p&gt;结语
-剑道漫长，先求其正，再求其快。&lt;/p&gt;</content>
+&lt;h2 id=&#34;一范式转变从补全到自治&#34;&gt;一、范式转变：从「补全」到「自治」&lt;/h2&gt;
+&lt;p&gt;两三年前,AI 编程工具还停留在「补全下一行」的阶段。2025—2026 年,行业完成了两次跃迁:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;从补全到 Agent&lt;/strong&gt;:工具会读取整个代码库、跨文件改动、运行测试、迭代修复——在一个自治循环里完成多步骤任务。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;从辅助到主导&lt;/strong&gt;:出现了能连续运行一周、自主完成绝大多数提交的「自治软件工程师」。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;用业界的比喻:&lt;strong&gt;你的工作方式从「和 AI 结对编程」变成了「给 AI 派活、你来验收」。&lt;/strong&gt;&lt;/p&gt;
+&lt;h2 id=&#34;二主流工具架构拆解&#34;&gt;二、主流工具架构拆解&lt;/h2&gt;
+&lt;h3 id=&#34;21-claude-code终端派&#34;&gt;2.1 Claude Code(终端派)&lt;/h3&gt;
+&lt;p&gt;定位:运行在&lt;strong&gt;终端&lt;/strong&gt;的 agentic 编码层。强项是&lt;strong&gt;多步骤、多文件、长周期&lt;/strong&gt;的编码任务——读全库、跨文件协调改动、跑测试并迭代,全程处于自治循环。&lt;/p&gt;
+&lt;p&gt;2026 年的关键演进(据 The Agentic Protocol 等一线总结):
+- &lt;strong&gt;子代理文本流式输出&lt;/strong&gt;,远程任务结果实时可见
+- &lt;strong&gt;&lt;code&gt;/fork&lt;/code&gt; 后台会话&lt;/strong&gt;,可把当前工作分叉到后台并行
+- &lt;strong&gt;Auto 模式&lt;/strong&gt;在 Bedrock/Vertex/Foundry 上无需手动开启
+- 坚持极大的&lt;strong&gt;上下文窗口(可达 1M token)&lt;/strong&gt;——这正是它做大规模重构的本钱&lt;/p&gt;
+&lt;h3 id=&#34;22-cursoride&#34;&gt;2.2 Cursor(IDE)&lt;/h3&gt;
+&lt;p&gt;定位:&lt;strong&gt;IDE 内嵌&lt;/strong&gt;的日常编码主力。强在&lt;strong&gt;内联自动补全、可视化 diff、编辑器内快速迭代&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;同时 Cursor 也在向&lt;strong&gt;自治&lt;/strong&gt;演进:
+- &lt;strong&gt;Composer/Composer 2&lt;/strong&gt;:专门为 agentic 软件工程训练的模型。Composer 2 在长期规划与编码智能上突出,在自家 &lt;strong&gt;CursorBench&lt;/strong&gt;(真实世界软件工程基准)上表现强,也在 SWE-bench Multilingual 与 Terminal-Bench 上达前沿水平;&lt;strong&gt;生成速度比同级模型快约 4 倍&lt;/strong&gt;。
+- &lt;strong&gt;自驾驶代码库研究&lt;/strong&gt;:Cursor 内部造了一个能编排&lt;strong&gt;上千个 agent&lt;/strong&gt; 的 harness,连续运行一周,完成了其研究项目(一个 web 浏览器)绝大部分提交。&lt;/p&gt;
+&lt;h3 id=&#34;23-devincopilot-等&#34;&gt;2.3 Devin、Copilot 等&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Devin&lt;/strong&gt;:偏「云端自治工程师」定位,接 ticket -&amp;gt; 出 PR,强调长任务独立执行。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Copilot Workspace&lt;/strong&gt;:微软把补全往「仓库级任务」方向扩展。&lt;/li&gt;
+&lt;li&gt;2026 年这些工具的边界已高度重叠,&lt;strong&gt;「终端 vs IDE」的说法已过时&lt;/strong&gt;,多数严肃工程师两手都用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;三基准乱局swe-bench-的可信度危机&#34;&gt;三、基准乱局：SWE-bench 的可信度危机&lt;/h2&gt;
+&lt;p&gt;这是第三篇最有价值的现实:&lt;strong&gt;软件工程 agent 的评测基准,正在失去可信度。&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;SWE-Bench Pro Verified&lt;/strong&gt; 被发现存在两处硬伤:
+  1. &lt;strong&gt;奖励黑客(reward hacking)&lt;/strong&gt;——金标准解法或用例信息泄漏,模型能&#34;背答案&#34;;
+  2. &lt;strong&gt;任务质量问题&lt;/strong&gt;——误导性的问题描述、范围不当的测试。&lt;/li&gt;
+&lt;li&gt;其后果是:评测分数可能&lt;strong&gt;虚高&lt;/strong&gt;,掩盖 agent 真实编码能力。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;OpenAI 已公开回撤对 SWE-bench Verified 的依赖&lt;/strong&gt;,理由是其中大部分用例被认为不可靠。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;结论&lt;/strong&gt;:厂商宣传页上的「SWE-bench 第一」,一个字都别轻信。要看,就看&lt;strong&gt;经得起检验的第三方/自测基准&lt;/strong&gt;(如 CursorBench、Terminal-Bench 这类带实际环境闭环的)。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;四架构层面的共性认识&#34;&gt;四、架构层面的共性认识&lt;/h2&gt;
+&lt;p&gt;综合多个一线拆解,2026 年优秀的编码 agent 普遍具备:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;代码库索引&lt;/strong&gt;:AST 仓库索引,让 agent 知道符号在哪、依赖关系如何,而非纯文本检索。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;执行-反馈闭环&lt;/strong&gt;:改完必跑测试,把测试输出(而非想象)作为下一步依据——「验证优先」。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;上下文管理&lt;/strong&gt;:长上下文 + 择优抽取,避免上下文稀释。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;工具面精调&lt;/strong&gt;:搜索/编辑/执行三件套的调用方式,决定 agent 的&#34;手脚&#34;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;多 agent 与 harness&lt;/strong&gt;:复杂任务拆给多个子代理并行,背后是 orchestration harness(详见 Harness 篇)。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;五避坑与上手建议&#34;&gt;五、避坑与上手建议&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;别相信单一榜单&lt;/strong&gt;,组一个你自己的「迷你 SWE-bench」:几道真实历史 bug,看 agent 能否自主修复并让测试变绿。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;从「改 bug」入手&lt;/strong&gt;,而非一开始就让它重写架构;agent 最擅长的是边界清晰的改进,而不是天翻地覆的重构。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;利用上下文窗口&lt;/strong&gt;:把相关文件与约束写进提示,喂给长上下文模型,效果远好于让它在迷雾里乱撞。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;人机分工&lt;/strong&gt;:IDE 编辑器内快速小改交给 Cursor 这类,大规模跨文件重构与 CI/CD 自动化交给 Claude Code 这类自治 agent。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;永远保持验收回路&lt;/strong&gt;:任何 agent 的提交,都要经过你自己的测试与 review——它变强了,但没到你放手的地步。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;五结语&#34;&gt;五、结语&lt;/h2&gt;
+&lt;p&gt;2025—2026 年,编程 Agent 完成了从「补全器」到「自治工程师」的跃迁,也暴露了「基准失真」这一行业软肋。真正的生产力并不来自抢最新的模型,而来自:&lt;strong&gt;能不能把 agent 编排进一个可测试、可验收、可回滚的工程流程。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;剑要快,更要握得稳。&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>众仙摆阵：AI Agent 框架全景综述</title>
+    <link href="https://wsn-star.github.io/posts/ai-agent%E6%A1%86%E6%9E%B6%E7%BB%BC%E8%BF%B0/"/>
+    <id>https://wsn-star.github.io/posts/ai-agent%E6%A1%86%E6%9E%B6%E7%BB%BC%E8%BF%B0/</id>
+    <published>2026-09-18T00:00:00-04:00</published>
+    <updated>2026-09-18T00:00:00-04:00</updated>
+<category term="AI"/><category term="Agent"/><category term="框架"/><category term="LangGraph"/><category term="CrewAI"/>    <summary>LangGraph、CrewAI、OpenAI Agents SDK、AutoGen/AG2、Claude Agent SDK……2026 年 agent 框架已从「卷概念」走向「卷工程」。逐家拆解,并给一张真正可用的选型决策表。</summary>
+    <content type="html">&lt;blockquote&gt;
+&lt;p&gt;昔者各据一隅,今则百器争鸣。铸造术之盛,莫过于此。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;!-- more --&gt;
+
+&lt;h2 id=&#34;一时代背景框架们成年了&#34;&gt;一、时代背景：框架们「成年」了&lt;/h2&gt;
+&lt;p&gt;2023 年,&#34;做一个 AI agent&#34;意味着用 while 循环包一层 GPT-4 调工具。到 2026 年,&lt;strong&gt;框架已经追上真实生产 agent 系统的复杂度&lt;/strong&gt;。最关键的转折:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;基础实验室亲自下场&lt;/strong&gt;:OpenAI、Google、Microsoft 都发布了第一方 agent 框架,结束了独立框架&#34;一家独大&#34;的局面。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;两个标志性事件&lt;/strong&gt;:
+  1. &lt;strong&gt;OpenAI Swarm 退役&lt;/strong&gt;,被正式开源的 &lt;strong&gt;OpenAI Agents SDK&lt;/strong&gt; 取代;
+  2. &lt;strong&gt;Anthropic 把 Claude Code SDK 更名为 Claude Agent SDK&lt;/strong&gt;,宣告它不再是&#34;仅编码&#34;工具。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;LangGraph 0.3&lt;/strong&gt; 把 &lt;strong&gt;中断与人工介入(human-in-the-loop)&lt;/strong&gt; 提升为一等公民。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;二头部框架逐项拆解&#34;&gt;二、头部框架逐项拆解&lt;/h2&gt;
+&lt;h3 id=&#34;21-langgraphstateful-图式工作流&#34;&gt;2.1 LangGraph(STateful 图式工作流)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;定位:&lt;strong&gt;有状态、图式控制流&lt;/strong&gt;的 agent 工作流,默认选型用于复杂 Python 流程。&lt;/li&gt;
+&lt;li&gt;形态:把 agent 编排成一张&lt;strong&gt;图&lt;/strong&gt;,节点 = 步骤,边 = 转移,天然支持分支/循环/并行。&lt;/li&gt;
+&lt;li&gt;硬实力:&lt;strong&gt;内置 checkpointing(回滚/恢复)&lt;/strong&gt;、模型无关、34.5M 月下载量,被 Klarna、Replit、Elastic 采用。&lt;/li&gt;
+&lt;li&gt;代价:&lt;strong&gt;学习曲线最陡(1~2 周)&lt;/strong&gt;,上手不如脚本派快。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;22-crewai角色制多智能体团队&#34;&gt;2.2 CrewAI(角色制多智能体团队)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;定位:&lt;strong&gt;基于角色的多 agent 协作&lt;/strong&gt;(&#34; crew &#34;,团队模式),约 20 行 Python 出一个可用原型。&lt;/li&gt;
+&lt;li&gt;演进到 v1.12:&lt;strong&gt;agent skills、原生 OpenAI 兼容供应商(OpenRouter/DeepSeek/Ollama/vLLM/Cerebras/Dashscope)、Qdrant Edge 记忆后端、分层记忆隔离&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;数据:52.8K stars / 5.2M 下载,学习约 3~5 天,靠速度与直观取胜。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;23-openai-agents-sdk极简&#34;&gt;2.3 OpenAI Agents SDK(极简)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;定位:官方 SDK,在 OpenAI 技术栈上的&lt;strong&gt;最小抽象&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;新特性强大:通过 &lt;strong&gt;LiteLLM 实现供应商无关、支持 100+ 模型&lt;/strong&gt;;10.3M 下载,是团队已扎根 OpenAI 生态时最快开跑的多 agent 路径。&lt;/li&gt;
+&lt;li&gt;代价:想换到非 OpenAI 生态时有一定锁定。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;24-autogen-ag2-microsoft-agent-framework&#34;&gt;2.4 AutoGen / AG2 / Microsoft Agent Framework&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;AutoGen 0.4&lt;/strong&gt;:一次 actor-model 重写,转向事件驱动架构;&lt;strong&gt;AG2 是 ground-up 重新设计的 Beta&lt;/strong&gt;,强调流式与事件驱动。&lt;/li&gt;
+&lt;li&gt;Microsoft 走&lt;strong&gt;双轨&lt;/strong&gt;(AutoGen 0.4 + Semantic Kernel Agent Framework),一个偏研究探索、一个偏企业落地。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;25-其它值得点名&#34;&gt;2.5 其它值得点名&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Claude Agent SDK&lt;/strong&gt;:Anthropic 把编码工具身份扩大为通用 agent 平台,背靠其强大的 harness(见 Harness 篇)。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Google ADK(Agent Development Kit)&lt;/strong&gt;:google 第一方,与 Gemini 深度整合。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;LlamaIndex / Pydantic AI / Vercel AI SDK&lt;/strong&gt;:分别主打数据编排、类型安全、前端集成,各据一方。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Mastra / Cargo AI / AWS Strands Agents&lt;/strong&gt; 等新兴势力,AWS 亦在 agent 编排领域布局。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;三选型决策矩阵可操作&#34;&gt;三、选型决策矩阵(可操作)&lt;/h2&gt;
+&lt;p&gt;这是本综述的核心实用产出——按你的场景对号入座:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;你的需求&lt;/th&gt;
+&lt;th&gt;首选框架&lt;/th&gt;
+&lt;th&gt;理由&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;有状态、复杂分支/循环、可回滚&lt;/td&gt;
+&lt;td&gt;LangGraph&lt;/td&gt;
+&lt;td&gt;checkpointing + 图控制流&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;多角色协作、快速原型&lt;/td&gt;
+&lt;td&gt;CrewAI&lt;/td&gt;
+&lt;td&gt;role-based 团队,20 行出活&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;已在 OpenAI 栈、要最小抽象&lt;/td&gt;
+&lt;td&gt;OpenAI Agents SDK&lt;/td&gt;
+&lt;td&gt;官方、快、LiteLLM 多模型&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;研究型事件流 agent&lt;/td&gt;
+&lt;td&gt;AG2(AutoGen)&lt;/td&gt;
+&lt;td&gt;事件驱动重设计&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;企业级 + 微软生态&lt;/td&gt;
+&lt;td&gt;Semantic Kernel Agent FW&lt;/td&gt;
+&lt;td&gt;双轨里的落地轨&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;通用自治能力 + 强悍 harness&lt;/td&gt;
+&lt;td&gt;Claude Agent SDK&lt;/td&gt;
+&lt;td&gt;Anthropic 全栈&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;数据密集、检索驱动&lt;/td&gt;
+&lt;td&gt;LlamaIndex / ADS&lt;/td&gt;
+&lt;td&gt;数据编排优&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;四2026-年的三大共性趋势&#34;&gt;四、2026 年的三大共性趋势&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;可观测性成为标配&lt;/strong&gt;:agent 不再&#34; 黑盒&#34;,trace、中间状态、人工介入点都是框架内建能力(Ry Walker 对 13 个框架的横向评测里,observability 是核心维度)。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;记忆与上下文工程化&lt;/strong&gt;:Qdrant Edge 记忆、分层隔离、记忆后端化——长期记忆不再是玩具。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;模型无关 vs 生态绑定之争&lt;/strong&gt;:一边是 LiteLLM/OpenRouter 式的&#34; 什么模型都能接&#34;,一边是官方 SDK 的深度锁定,选型时要想清楚自己在哪边。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;五避坑与建议&#34;&gt;五、避坑与建议&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;别让框架决定业务&lt;/strong&gt;。先用手画出你 agent 的流程图(状态、分支、人工卡点 To be selected),再挑能原生表达它的框架。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;警惕&#34;Hype 改命&#34;&lt;/strong&gt;:LangGraph 学习曲线背后的价值是&#34; 有状态、可回滚&#34;,如果你只需一个简单循环,OpenAI SDK / CrewAI 更快,别为过度工程买单。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;一定要有人工介入点&lt;/strong&gt;:把 human-in-the-loop(如 LangGraph 的 interrupt)设计成默认,而不是事后补丁——这关乎可控性。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;企业选型看可观测性与安全&lt;/strong&gt;:选带好 trace 与记忆隔离的,别选最炫的。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;六结语&#34;&gt;六、结语&lt;/h2&gt;
+&lt;p&gt;2026 年的 agent 框架,已从&#34; 证明你也能写个 agent&#34;的炫技阶段,进入&#34; &lt;strong&gt;管得住、看得见、能回滚、敢上生产&lt;/strong&gt;&#34;的工程阶段。真正的选型智慧,不是追最火的名字,而是:&lt;strong&gt;让框架匹配你的状态拓扑,让你永远握有人工介入的缰绳。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;摆阵容易,驭阵在人。&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>方寸之地：AI Agent 本地部署小模型综述</title>
+    <link href="https://wsn-star.github.io/posts/ai-agent%E6%9C%AC%E5%9C%B0%E5%B0%8F%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E7%BB%BC%E8%BF%B0/"/>
+    <id>https://wsn-star.github.io/posts/ai-agent%E6%9C%AC%E5%9C%B0%E5%B0%8F%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E7%BB%BC%E8%BF%B0/</id>
+    <published>2026-09-18T00:00:00-04:00</published>
+    <updated>2026-09-18T00:00:00-04:00</updated>
+<category term="AI"/><category term="小模型"/><category term="本地部署"/><category term="量化"/><category term="边缘计算"/>    <summary>从 7B 量化到 NPU 端侧推理，2026 年小模型本地部署已成 Agent 落地的关键底座。拆解量化、蒸馏、运行时选型与硬件边界，给出真正可执行的选型路线。</summary>
+    <content type="html">&lt;blockquote&gt;
+&lt;p&gt;大法虽强，法不可轻移；移入方寸之间，方为已用。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;!-- more --&gt;
+
+&lt;h2 id=&#34;一为什么小模型本地部署突然重要&#34;&gt;一、为什么「小模型本地部署」突然重要&lt;/h2&gt;
+&lt;p&gt;两年前的共识是「能力在云端」,但 2026 年的格局已经反转:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;隐私与合规&lt;/strong&gt;:数据不出门成为硬约束——医疗、政务、企业知识库,明文数据不能上云。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;延迟与成本&lt;/strong&gt;:端侧推理零网络延迟、零按 token 计费,对 Agent 的长任务循环尤其重要。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;模型变小但变强&lt;/strong&gt;:蒸馏与量化让 1.5B~9B 的小语言模型(SLM)在多数任务上&#34;够用&#34;——这正是 Agent 里调用最频繁的那一层。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;二硬事实量化革命改变了什么&#34;&gt;二、硬事实:量化革命改变了什么&lt;/h2&gt;
+&lt;p&gt;一个常被引用的数字对比:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;一个 70 亿参数模型,FP32 需要约 &lt;strong&gt;28GB&lt;/strong&gt; 显存;4-bit 量化后降到 &lt;strong&gt;不足 4GB&lt;/strong&gt;,质量损失在多数任务上几乎不可感知。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;这让本地推理从「企业 GPU 才能玩」变成「M 系列 MacBook、游戏级 RTX、甚至高内存纯 CPU 机器都能跑」。量化(特别是 &lt;strong&gt;GGUF 格式的 Q4_K_M&lt;/strong&gt; 级别)是这一切的基石。&lt;/p&gt;
+&lt;h2 id=&#34;三运行时全景六大选择&#34;&gt;三、运行时全景:六大选择&lt;/h2&gt;
+&lt;p&gt;2026 年边缘 LLM 运行时格局(据 Edge LLM Runtime Stack 与 Building Language AI 的梳理):&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;运行时&lt;/th&gt;
+&lt;th&gt;硬件倾向&lt;/th&gt;
+&lt;th&gt;定位&lt;/th&gt;
+&lt;th&gt;适用场景&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;llama.cpp&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;通用,CPU 优先&lt;/td&gt;
+&lt;td&gt;最可移植的 C/C++ 运行时,GGUF 格式&lt;/td&gt;
+&lt;td&gt;能跑就行,兼容性第一&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Ollama&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;通用&lt;/td&gt;
+&lt;td&gt;llama.cpp 的便捷封装 + HTTP API&lt;/td&gt;
+&lt;td&gt;原型与开发者工作流的事实标准&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;MLX&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Apple Silicon&lt;/td&gt;
+&lt;td&gt;为统一内存专门打造&lt;/td&gt;
+&lt;td&gt;M 系列 Mac,14B 以下模型比 llama.cpp 快 20%~87%&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;ExecuTorch&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;移动端&lt;/td&gt;
+&lt;td&gt;PyTorch → 手机的运行时&lt;/td&gt;
+&lt;td&gt;Android/iOS 端上 Agent&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;WebLLM&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;浏览器&lt;/td&gt;
+&lt;td&gt;WebGPU 在浏览器里推理&lt;/td&gt;
+&lt;td&gt;无安装、纯网页的 Agent 界面&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Qualcomm AI Hub&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Snapdragon NPU&lt;/td&gt;
+&lt;td&gt;高通 NPU 工具链&lt;/td&gt;
+&lt;td&gt;骁龙设备的端侧 Agent&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;关键提醒:量化格式不能随便跨运行时迁移。GGUF 在 CPU/Jetson/Apple Silicon 间可移植,但 &lt;strong&gt;NVFP4 这类 Blackwell 专用格式就不会在 Orin 上跑&lt;/strong&gt;。选型时要先定硬件,再定格式。&lt;/p&gt;
+&lt;h2 id=&#34;四模型侧的三板斧&#34;&gt;四、模型侧的三板斧&lt;/h2&gt;
+&lt;p&gt;从系统综述(On-device LLMs: a survey of model compression and system optimization)看,本地小模型的能力来自三条技术线:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;量化(Quantization)&lt;/strong&gt;:4-bit/2-bit 权重量化,GGUF/QAT 等,是&#34;省显存&#34;的第一功臣。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;蒸馏(Distillation)&lt;/strong&gt;:大模型把能力压缩进小参数模型,让 SLM&#34;继承&#34;大模型的行为。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;剪枝与低秩适配(LoRA)&lt;/strong&gt;:进一步瘦身 + 低成本微调,让模型贴合你的领域。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这三者往往&lt;strong&gt;组合使用&lt;/strong&gt;,而非单选。&lt;/p&gt;
+&lt;h2 id=&#34;五硬件边界cpugpunpu-怎么选&#34;&gt;五、硬件边界:CPU、GPU、NPU 怎么选&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;CPU 为主&lt;/strong&gt;:llama.cpp + GGUF,高内存即可跑 7B~14B,速度 5~20 tok/s,够日常问答与知识库检索。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;GPU 加速&lt;/strong&gt;:游戏级显卡即可流畅跑 14B 甚至 32B 量化模型,是「本地 Agent 主力机」的首选。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;NPU 崛起&lt;/strong&gt;:2026 年 Windows 的 &lt;strong&gt;ONNX Runtime + Qualcomm QNN&lt;/strong&gt; 让 NPU 开发走上正轨;NPU 擅长矩阵运算,能效比高,但生态与格式仍在收敛。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Apple Silicon&lt;/strong&gt;:统一内存架构 + MLX,是目前「端侧体验最好」的组合。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;六给-agent-落地者的路线图&#34;&gt;六、给 Agent 落地者的路线图&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;先定硬件边界&lt;/strong&gt;,再选运行时:Apple Silicon 上 MLX、通用桌面 Ollama/llama.cpp、手机 ExecuTorch、浏览器 WebLLM。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;从 7B 级量化模型起步&lt;/strong&gt;(GGUF Q4_K_M),验证任务质量;不够再升 14B,别一上来就冲大。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;嵌入模型与生成模型分开&lt;/strong&gt;:嵌入用更轻的(如 nomic-embed-text),生成用稍大的,性价比最优。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;与本地知识库/RAG 组合&lt;/strong&gt;(见《AI 本地个人知识库建设》):小模型 + 检索,是「本地 Agent」最务实的组合。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;评估闭环不可省&lt;/strong&gt;:本地模型差距用你的真实任务集验证,别用榜单结论代替。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;七结语&#34;&gt;七、结语&lt;/h2&gt;
+&lt;p&gt;2026 年,「把 Agent 跑在本地」不再是妥协,而是一种&lt;strong&gt;架构选择&lt;/strong&gt;:隐私、成本、延迟、可控,全都要回来了。量化与蒸馏把大模型的能力压缩进方寸之间,而你的任务,是选对那枚「适合自己的丹」——不是越大越好,而是&lt;strong&gt;在你能掌控的硬件上,跑出可信、可验证的结果&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;大道至简,方寸即是乾坤。&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>铸甲驭灵：AI Agent 的 Harness 工程综述</title>
+    <link href="https://wsn-star.github.io/posts/ai-agent-harness%E7%BB%BC%E8%BF%B0/"/>
+    <id>https://wsn-star.github.io/posts/ai-agent-harness%E7%BB%BC%E8%BF%B0/</id>
+    <published>2026-09-18T00:00:00-04:00</published>
+    <updated>2026-09-18T00:00:00-04:00</updated>
+<category term="AI"/><category term="Agent"/><category term="Harness"/><category term="综述"/><category term="工程"/>    <summary>2026 年 AI 领域最重要的转向之一:agent 的好坏，早已不只是模型，而是包着模型的那层运行环境——Harness。拆解这场新学科的解剖、关键组件与工程实践。</summary>
+    <content type="html">&lt;blockquote&gt;
+&lt;p&gt;剑灵虽利，若无剑鞘锁灵，一剑既出，反噬其主。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;!-- more --&gt;
+
+&lt;h2 id=&#34;一什么是一个harness&#34;&gt;一、什么是一个「Harness」&lt;/h2&gt;
+&lt;p&gt;2026 年最不该被忽视的一个认知转变:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Agent = 模型 + Harness。&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Harness(又称&#34; 机架 / 宿主 / 运行时&#34;)是&lt;strong&gt;把 LLM 与外部世界耦合起来的那套运行时&lt;/strong&gt;——agent 循环、工具、上下文管理、安全控制、编排、扩展接口,统统属于 harness,而不是模型本身。&lt;/p&gt;
+&lt;p&gt;一篇对 11 个生产级编码 harness 的源码解剖研究(Harness Engineering: Anatomy... of Coding Agents)给出了精确的定义:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;An agent is a model plus a harness: the runtime that couples an LLM to the world through a &lt;strong&gt;loop, tools, context management, safety controls, orchestration, and extension surfaces&lt;/strong&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;二为什么突然被重视&#34;&gt;二、为什么突然被重视&lt;/h2&gt;
+&lt;p&gt;两个残酷的事实,把 Harness 从配角推向舞台中央:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;模型已「收敛」&lt;/strong&gt;。2023—2026 年间,前沿模型之间的差距迅速缩小。对多数生产任务,&lt;strong&gt;换一家顶级模型,结果往往变化不大&lt;/strong&gt;;决定胜负的,在下一层——你怎么调用它、喂什么上下文、给什么工具。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;「98% 的问题在模型之下」&lt;/strong&gt;。BeConfident Labs 的综述标题直白地点出:agent 的质量落在&lt;strong&gt;模型之下&lt;/strong&gt;——在循环、上下文引擎、工具面、安全栈与评估器里,而不是模型本身。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;硬数据&lt;/strong&gt;:多篇研究指出,&lt;strong&gt;任务变长变复杂时,仅靠重设计 harness(模型保持不变),可靠性就能获得数量级的提升(order-of-magnitude reliability gains)&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;三harness-的四大组成&#34;&gt;三、Harness 的四大组成&lt;/h2&gt;
+&lt;p&gt;综合几篇 2026 年 survey,Harness 工程的核心部件可归为四层:&lt;/p&gt;
+&lt;h3 id=&#34;31-循环与上下文引擎&#34;&gt;3.1 循环与上下文引擎&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;agent 循环&lt;/strong&gt;:模型怎么被反复调用、何时停、如何从工具结果继续。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;上下文引擎(context engine)&lt;/strong&gt;:决定&#34; 喂什么给模型&#34;。长上下文、择优抽取、上下文压缩,避免&#34; 上下文稀释&#34;。&lt;/li&gt;
+&lt;li&gt;这是&#34; 98%&#34;里最能拉开差距的一环——给多、给乱,不如给对。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;32-工具面tool-surface&#34;&gt;3.2 工具面(tool surface)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;模型能调用哪些工具、每个工具如何定义/约束、工具返回如何被消化。&lt;/li&gt;
+&lt;li&gt;Claude Code、Codex CLI、Gemini CLI 等 11 个编码 harness 的解剖研究,把&#34; 工具面&#34;作为影响成败的核心维度之一。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;33-安全与确认控制safety-controls&#34;&gt;3.3 安全与确认控制(safety controls)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;不是模型的 &lt;code&gt;safety&lt;/code&gt;,而是&lt;strong&gt;运行时对危险动作的拦截与确认&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;人工介入点、权限边界、破坏性操作确认——这是 agent 能&#34; 上生产&#34;而与&#34; 玩具&#34;分开的关键分界线。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;34-编排与扩展orchestration-extension&#34;&gt;3.4 编排与扩展(orchestration &amp;amp; extension)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;多 agent 如何协作、子代理如何并行、可插拔扩展接口(MCP 等)。&lt;/li&gt;
+&lt;li&gt;Cursor 的&#34; 自驾驶代码库&#34;研究,正是一个能编排&lt;strong&gt;上千个 agent&lt;/strong&gt; 的 harness——这是 Orchestration 的极端形态。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;四一个兴起的新范式代码即-harness&#34;&gt;四、一个兴起的新范式:代码即 Harness&lt;/h2&gt;
+&lt;p&gt;一篇 2026 论文提出 &lt;strong&gt;Code as Agent Harness&lt;/strong&gt;,把代码本身当作 agent 的运行底座:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;代码不再只是&#34; 目标输出&#34;,而是&lt;strong&gt;agent 推理、行动、环境建模与基于执行的验证的操作性基质&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;agent 通过生成/执行代码来&#34; 思考和验证&#34;,用可执行的东西代替纯粹的文本猜测。&lt;/li&gt;
+&lt;li&gt;这为&#34; 可执行、可验证、有状态&#34;的 agent 系统提供了统一视角。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;五研究如何落地groom-之类&#34;&gt;五、研究如何落地:&lt;code&gt;GROOM&lt;/code&gt; 之类&lt;/h2&gt;
+&lt;p&gt;BeConfident Labs 在 survey 中提出并开源 &lt;strong&gt;GROOM&lt;/strong&gt;,一个&#34; 自维护的知识 harness&#34;。它展示了 Harness 理念的落地:把长期记忆、上下文引擎、工具面与评估器做成一个能自我维护的系统,而非散装拼装。&lt;/p&gt;
+&lt;h2 id=&#34;六给从业者的判断框架&#34;&gt;六、给从业者的判断框架&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;换模型前,先看 harness&lt;/strong&gt;。如果你的 agent 效果不好,先排查上下文喂得对不对、工具面全不全、循环停得合理与否,再决定是否花大价钱换模型。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;把安全控制做成默认&lt;/strong&gt;。危险操作确认、权限边界,是 harness 设计的&#34; 地基&#34;,不是后补的补丁。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;关注可观测性&lt;/strong&gt;。Harness 的价值在于&#34;看得见&#34;——中间状态、每一步的决策,都应有 trace。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;用评估器做闭环&lt;/strong&gt;。harness 里应有&#34;评估&#34;部件,让 agent 自己验证结果(如跑测试),而不是靠想象。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;七结语&#34;&gt;七、结语&lt;/h2&gt;
+&lt;p&gt;如果说 2025 年是&#34; 模型之年&#34;,那么 2026 年就是 &lt;strong&gt;&#34;Harness 之年&#34;&lt;/strong&gt;。当模型越来越像、越来越强,&lt;strong&gt;真正的护城河与决胜点,转向了那层看不见的运行时——谁能让模型更可靠、更安全、更可控地干活,谁就赢。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;剑灵虽利,驭于鞘而随之鞘。&lt;/p&gt;</content>
   </entry>
 </feed>

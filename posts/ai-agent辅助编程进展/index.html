@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>御剑炼丹：AI Agent 辅助编程的技术进展综述 · 青云志</title>
+<meta name="description" content="从补全到自治编码，2025—2026 年 AI 编程助手完成了从「帮你打字」到「替你开车」的跃迁。一文拆解 Claude Code、Cursor、Composer 的架构演进、基准真相与落地要点。">
+<link rel="canonical" href="https://wsn-star.github.io/posts/ai-agent%E8%BE%85%E5%8A%A9%E7%BC%96%E7%A8%8B%E8%BF%9B%E5%B1%95/"><meta name="generator" content="post-generator v0.1.0">
+<meta name="theme-color" content="#141c21">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "author": {"@type": "Person", "name": "\u65e0\u540d\u6563\u4fee"}, "dateModified": "2026-09-18T00:00:00-04:00", "datePublished": "2026-09-18T00:00:00-04:00", "description": "\u4ece\u8865\u5168\u5230\u81ea\u6cbb\u7f16\u7801\uff0c2025\u20142026 \u5e74 AI \u7f16\u7a0b\u52a9\u624b\u5b8c\u6210\u4e86\u4ece\u300c\u5e2e\u4f60\u6253\u5b57\u300d\u5230\u300c\u66ff\u4f60\u5f00\u8f66\u300d\u7684\u8dc3\u8fc1\u3002\u4e00\u6587\u62c6\u89e3 Claude Code\u3001Cursor\u3001Composer \u7684\u67b6\u6784\u6f14\u8fdb\u3001\u57fa\u51c6\u771f\u76f8\u4e0e\u843d\u5730\u8981\u70b9\u3002", "headline": "\u5fa1\u5251\u70bc\u4e39\uff1aAI Agent \u8f85\u52a9\u7f16\u7a0b\u7684\u6280\u672f\u8fdb\u5c55\u7efc\u8ff0", "keywords": "AI\uff0cAgent\uff0c\u7f16\u7a0b\uff0cSWE-bench", "mainEntityOfPage": "https://wsn-star.github.io/posts/ai-agent%E8%BE%85%E5%8A%A9%E7%BC%96%E7%A8%8B%E8%BF%9B%E5%B1%95/"}</script><link rel="stylesheet" href="/assets/css/xianxia.css">
+<link rel="stylesheet" href="/assets/css/blog.css">
+<script>document.documentElement.dataset.theme = localStorage.getItem('xianxia-theme') || 'light';
+window.BLOG_ROOT = "";</script>
+</head>
+<body class="xianxia">
+<svg class="deco-svg" aria-hidden="true"><defs>
+  <symbol id="cloud-symbol" viewBox="0 0 48 16">
+    <path d="M24 2c-3.2 0-5.8 2-6.9 4.8C13.9 6.2 11 8.4 11 11.2 11 14 13.4 16 16.4 16h15.2c3 0 5.4-2 5.4-4.8 0-2.8-2.9-5-6.1-5.2C29.8 3.4 27.2 2 24 2z" fill="currentColor" opacity=".55"/>
+    <circle cx="38" cy="6" r="4.5" fill="currentColor" opacity=".3"/>
+    <circle cx="8" cy="10" r="3" fill="currentColor" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <nav class="nav-bar" aria-label="主导航">
+    <a class="brand" href="/">青云志</a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="site-menu" aria-label="打开菜单">☰</button>
+    <ul class="site-menu" id="site-menu">
+      <li><a href="/">首页</a></li>
+      <li><a href="/archives/">归档</a></li>
+      <li><a href="/tags/">标签</a></li>
+<li><a href="/关于/">关于</a></li>      <li><a href="/rss.xml">订阅</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button id="search-open" class="icon-btn" aria-label="搜索" aria-haspopup="dialog">🔍</button>
+      <button id="theme-toggle" class="icon-btn" aria-label="切换明暗主题" title="切换明暗">🌙</button>
+    </div>
+  </nav>
+</header>
+<main id="main" class="container">
+<article class="post">
+  <header class="post-head">
+    <p class="post-route"><a href="/">首页</a> › <a href="/tags/">标签</a> › <a href="/archives/">归档</a></p>
+    <h1 class="post-title">御剑炼丹：AI Agent 辅助编程的技术进展综述</h1>
+    <div class="post-meta">
+      <time datetime="2026-09-18">2026年09月18日</time>
+      <span>约 4 分钟</span>
+<span>无名散修</span>    </div>
+    <ul class="tag-list" aria-label="标签">
+<li><a class="tag" href="/tags/ai/">AI</a></li><li><a class="tag" href="/tags/agent/">Agent</a></li><li><a class="tag" href="/tags/编程/">编程</a></li><li><a class="tag" href="/tags/swe-bench/">SWE-bench</a></li>    </ul>
+  </header>
+  <div class="post-layout">
+    <div class="post-body prose">
+      <blockquote>
+<p>昔日用剑者，今以剑御人。代码之灵已成，驾驭之道在焉。</p>
+</blockquote>
+<!-- more -->
+
+<h2 id="一范式转变从补全到自治">一、范式转变：从「补全」到「自治」</h2>
+<p>两三年前,AI 编程工具还停留在「补全下一行」的阶段。2025—2026 年,行业完成了两次跃迁:</p>
+<ol>
+<li><strong>从补全到 Agent</strong>:工具会读取整个代码库、跨文件改动、运行测试、迭代修复——在一个自治循环里完成多步骤任务。</li>
+<li><strong>从辅助到主导</strong>:出现了能连续运行一周、自主完成绝大多数提交的「自治软件工程师」。</li>
+</ol>
+<p>用业界的比喻:<strong>你的工作方式从「和 AI 结对编程」变成了「给 AI 派活、你来验收」。</strong></p>
+<h2 id="二主流工具架构拆解">二、主流工具架构拆解</h2>
+<h3 id="21-claude-code终端派">2.1 Claude Code(终端派)</h3>
+<p>定位:运行在<strong>终端</strong>的 agentic 编码层。强项是<strong>多步骤、多文件、长周期</strong>的编码任务——读全库、跨文件协调改动、跑测试并迭代,全程处于自治循环。</p>
+<p>2026 年的关键演进(据 The Agentic Protocol 等一线总结):
+- <strong>子代理文本流式输出</strong>,远程任务结果实时可见
+- <strong><code>/fork</code> 后台会话</strong>,可把当前工作分叉到后台并行
+- <strong>Auto 模式</strong>在 Bedrock/Vertex/Foundry 上无需手动开启
+- 坚持极大的<strong>上下文窗口(可达 1M token)</strong>——这正是它做大规模重构的本钱</p>
+<h3 id="22-cursoride">2.2 Cursor(IDE)</h3>
+<p>定位:<strong>IDE 内嵌</strong>的日常编码主力。强在<strong>内联自动补全、可视化 diff、编辑器内快速迭代</strong>。</p>
+<p>同时 Cursor 也在向<strong>自治</strong>演进:
+- <strong>Composer/Composer 2</strong>:专门为 agentic 软件工程训练的模型。Composer 2 在长期规划与编码智能上突出,在自家 <strong>CursorBench</strong>(真实世界软件工程基准)上表现强,也在 SWE-bench Multilingual 与 Terminal-Bench 上达前沿水平;<strong>生成速度比同级模型快约 4 倍</strong>。
+- <strong>自驾驶代码库研究</strong>:Cursor 内部造了一个能编排<strong>上千个 agent</strong> 的 harness,连续运行一周,完成了其研究项目(一个 web 浏览器)绝大部分提交。</p>
+<h3 id="23-devincopilot-等">2.3 Devin、Copilot 等</h3>
+<ul>
+<li><strong>Devin</strong>:偏「云端自治工程师」定位,接 ticket -&gt; 出 PR,强调长任务独立执行。</li>
+<li><strong>Copilot Workspace</strong>:微软把补全往「仓库级任务」方向扩展。</li>
+<li>2026 年这些工具的边界已高度重叠,<strong>「终端 vs IDE」的说法已过时</strong>,多数严肃工程师两手都用。</li>
+</ul>
+<h2 id="三基准乱局swe-bench-的可信度危机">三、基准乱局：SWE-bench 的可信度危机</h2>
+<p>这是第三篇最有价值的现实:<strong>软件工程 agent 的评测基准,正在失去可信度。</strong></p>
+<ul>
+<li><strong>SWE-Bench Pro Verified</strong> 被发现存在两处硬伤:
+  1. <strong>奖励黑客(reward hacking)</strong>——金标准解法或用例信息泄漏,模型能"背答案";
+  2. <strong>任务质量问题</strong>——误导性的问题描述、范围不当的测试。</li>
+<li>其后果是:评测分数可能<strong>虚高</strong>,掩盖 agent 真实编码能力。</li>
+<li><strong>OpenAI 已公开回撤对 SWE-bench Verified 的依赖</strong>,理由是其中大部分用例被认为不可靠。</li>
+<li><strong>结论</strong>:厂商宣传页上的「SWE-bench 第一」,一个字都别轻信。要看,就看<strong>经得起检验的第三方/自测基准</strong>(如 CursorBench、Terminal-Bench 这类带实际环境闭环的)。</li>
+</ul>
+<h2 id="四架构层面的共性认识">四、架构层面的共性认识</h2>
+<p>综合多个一线拆解,2026 年优秀的编码 agent 普遍具备:</p>
+<ol>
+<li><strong>代码库索引</strong>:AST 仓库索引,让 agent 知道符号在哪、依赖关系如何,而非纯文本检索。</li>
+<li><strong>执行-反馈闭环</strong>:改完必跑测试,把测试输出(而非想象)作为下一步依据——「验证优先」。</li>
+<li><strong>上下文管理</strong>:长上下文 + 择优抽取,避免上下文稀释。</li>
+<li><strong>工具面精调</strong>:搜索/编辑/执行三件套的调用方式,决定 agent 的"手脚"。</li>
+<li><strong>多 agent 与 harness</strong>:复杂任务拆给多个子代理并行,背后是 orchestration harness(详见 Harness 篇)。</li>
+</ol>
+<h2 id="五避坑与上手建议">五、避坑与上手建议</h2>
+<ol>
+<li><strong>别相信单一榜单</strong>,组一个你自己的「迷你 SWE-bench」:几道真实历史 bug,看 agent 能否自主修复并让测试变绿。</li>
+<li><strong>从「改 bug」入手</strong>,而非一开始就让它重写架构;agent 最擅长的是边界清晰的改进,而不是天翻地覆的重构。</li>
+<li><strong>利用上下文窗口</strong>:把相关文件与约束写进提示,喂给长上下文模型,效果远好于让它在迷雾里乱撞。</li>
+<li><strong>人机分工</strong>:IDE 编辑器内快速小改交给 Cursor 这类,大规模跨文件重构与 CI/CD 自动化交给 Claude Code 这类自治 agent。</li>
+<li><strong>永远保持验收回路</strong>:任何 agent 的提交,都要经过你自己的测试与 review——它变强了,但没到你放手的地步。</li>
+</ol>
+<h2 id="五结语">五、结语</h2>
+<p>2025—2026 年,编程 Agent 完成了从「补全器」到「自治工程师」的跃迁,也暴露了「基准失真」这一行业软肋。真正的生产力并不来自抢最新的模型,而来自:<strong>能不能把 agent 编排进一个可测试、可验收、可回滚的工程流程。</strong></p>
+<p>剑要快,更要握得稳。</p>
+    </div>
+    <aside class="toc" aria-label="章节目录">
+      <p class="toc-title">卷目</p>
+      <ol>
+        <li class="toc-l2"><a href="#一范式转变从补全到自治">一、范式转变：从「补全」到「自治」</a></li>
+        <li class="toc-l2"><a href="#二主流工具架构拆解">二、主流工具架构拆解</a></li>
+        <li class="toc-l3"><a href="#21-claude-code终端派">2.1 Claude Code(终端派)</a></li>
+        <li class="toc-l3"><a href="#22-cursoride">2.2 Cursor(IDE)</a></li>
+        <li class="toc-l3"><a href="#23-devincopilot-等">2.3 Devin、Copilot 等</a></li>
+        <li class="toc-l2"><a href="#三基准乱局swe-bench-的可信度危机">三、基准乱局：SWE-bench 的可信度危机</a></li>
+        <li class="toc-l2"><a href="#四架构层面的共性认识">四、架构层面的共性认识</a></li>
+        <li class="toc-l2"><a href="#五避坑与上手建议">五、避坑与上手建议</a></li>
+        <li class="toc-l2"><a href="#五结语">五、结语</a></li>
+      </ol>
+    </aside>
+  </div>
+  <section class="related" aria-label="相关文章">
+    <h2>他山之石 · 相关文章</h2>
+    <div class="related-list">
+      <a class="related-card" href="/posts/ai-agent框架综述/">
+        <span class="related-date">2026-09-18</span>
+        <span class="related-title">众仙摆阵：AI Agent 框架全景综述</span>
+      </a>
+      <a class="related-card" href="/posts/ai-agent-harness综述/">
+        <span class="related-date">2026-09-18</span>
+        <span class="related-title">铸甲驭灵：AI Agent 的 Harness 工程综述</span>
+      </a>
+      <a class="related-card" href="/posts/ai本地个人知识库建设/">
+        <span class="related-date">2026-09-18</span>
+        <span class="related-title">问道阁：AI 加持的本地个人知识库建设指南</span>
+      </a>
+    </div>
+  </section>
+  <nav class="post-nav" aria-label="上一篇/下一篇">
+<a class="post-nav-prev" href="/posts/ai总体态势综述/">← 问道AI：2026 年人工智能总体态势综述</a><a class="post-nav-next" href="/posts/ai-agent框架综述/">众仙摆阵：AI Agent 框架全景综述 →</a>  </nav>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="cloud-divider" aria-hidden="true">
+    <svg viewBox="0 0 480 18" role="presentation"><use href="#cloud-symbol" x="0"/><use href="#cloud-symbol" x="144"/><use href="#cloud-symbol" x="288"/><use href="#cloud-symbol" x="432" transform="scale(-1,1) translate(-480,0)"/></svg>
+  </div>
+  <p class="footer-line">剑气纵横三万里，一剑光寒十九州。</p>
+  <p class="footer-meta">© 2026 无名散修 · 由 post-generator 铸造 · <a href="/atom.xml">Atom</a> / <a href="/rss.xml">RSS</a></p>
+</footer>
+<div id="search-panel" class="search-panel" hidden aria-hidden="true">
+  <div class="search-box" role="dialog" aria-modal="true" aria-labelledby="search-title">
+    <h2 id="search-title" class="visually-hidden">站内搜索</h2>
+    <div class="search-field">
+      <label class="visually-hidden" for="search-input">搜索关键词</label>
+      <input id="search-input" type="search" placeholder="搜剑诀、丹方、见闻…" autocomplete="off">
+      <button id="search-close" class="icon-btn" aria-label="关闭搜索">✕</button>
+    </div>
+    <p id="search-status" class="search-status" role="status"></p>
+    <ul id="search-results" class="search-results"></ul>
+  </div>
+</div>
+<script src="/assets/search-index.js" defer></script>
+<script src="/assets/js/theme.js" defer></script>
+<script src="/assets/js/search.js" defer></script>
+<script src="/assets/js/main.js" defer></script>
+</body>
+</html>

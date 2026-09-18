@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>问道阁：AI 加持的本地个人知识库建设指南 · 青云志</title>
+<meta name="description" content="从 Karpathy 的 LLM Wiki 模式到本地 RAG 与图检索，一文讲清 2026 年「完全本地、隐私安全、越用越聪明」的个人知识库怎么搭。">
+<link rel="canonical" href="https://wsn-star.github.io/posts/ai%E6%9C%AC%E5%9C%B0%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E5%BA%93%E5%BB%BA%E8%AE%BE/"><meta name="generator" content="post-generator v0.1.0">
+<meta name="theme-color" content="#141c21">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "author": {"@type": "Person", "name": "\u65e0\u540d\u6563\u4fee"}, "dateModified": "2026-09-18T00:00:00-04:00", "datePublished": "2026-09-18T00:00:00-04:00", "description": "\u4ece Karpathy \u7684 LLM Wiki \u6a21\u5f0f\u5230\u672c\u5730 RAG \u4e0e\u56fe\u68c0\u7d22\uff0c\u4e00\u6587\u8bb2\u6e05 2026 \u5e74\u300c\u5b8c\u5168\u672c\u5730\u3001\u9690\u79c1\u5b89\u5168\u3001\u8d8a\u7528\u8d8a\u806a\u660e\u300d\u7684\u4e2a\u4eba\u77e5\u8bc6\u5e93\u600e\u4e48\u642d\u3002", "headline": "\u95ee\u9053\u9601\uff1aAI \u52a0\u6301\u7684\u672c\u5730\u4e2a\u4eba\u77e5\u8bc6\u5e93\u5efa\u8bbe\u6307\u5357", "keywords": "AI\uff0c\u77e5\u8bc6\u5e93\uff0cRAG\uff0c\u672c\u5730\u90e8\u7f72", "mainEntityOfPage": "https://wsn-star.github.io/posts/ai%E6%9C%AC%E5%9C%B0%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E5%BA%93%E5%BB%BA%E8%AE%BE/"}</script><link rel="stylesheet" href="/assets/css/xianxia.css">
+<link rel="stylesheet" href="/assets/css/blog.css">
+<script>document.documentElement.dataset.theme = localStorage.getItem('xianxia-theme') || 'light';
+window.BLOG_ROOT = "";</script>
+</head>
+<body class="xianxia">
+<svg class="deco-svg" aria-hidden="true"><defs>
+  <symbol id="cloud-symbol" viewBox="0 0 48 16">
+    <path d="M24 2c-3.2 0-5.8 2-6.9 4.8C13.9 6.2 11 8.4 11 11.2 11 14 13.4 16 16.4 16h15.2c3 0 5.4-2 5.4-4.8 0-2.8-2.9-5-6.1-5.2C29.8 3.4 27.2 2 24 2z" fill="currentColor" opacity=".55"/>
+    <circle cx="38" cy="6" r="4.5" fill="currentColor" opacity=".3"/>
+    <circle cx="8" cy="10" r="3" fill="currentColor" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <nav class="nav-bar" aria-label="主导航">
+    <a class="brand" href="/">青云志</a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="site-menu" aria-label="打开菜单">☰</button>
+    <ul class="site-menu" id="site-menu">
+      <li><a href="/">首页</a></li>
+      <li><a href="/archives/">归档</a></li>
+      <li><a href="/tags/">标签</a></li>
+<li><a href="/关于/">关于</a></li>      <li><a href="/rss.xml">订阅</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button id="search-open" class="icon-btn" aria-label="搜索" aria-haspopup="dialog">🔍</button>
+      <button id="theme-toggle" class="icon-btn" aria-label="切换明暗主题" title="切换明暗">🌙</button>
+    </div>
+  </nav>
+</header>
+<main id="main" class="container">
+<article class="post">
+  <header class="post-head">
+    <p class="post-route"><a href="/">首页</a> › <a href="/tags/">标签</a> › <a href="/archives/">归档</a></p>
+    <h1 class="post-title">问道阁：AI 加持的本地个人知识库建设指南</h1>
+    <div class="post-meta">
+      <time datetime="2026-09-18">2026年09月18日</time>
+      <span>约 4 分钟</span>
+<span>无名散修</span>    </div>
+    <ul class="tag-list" aria-label="标签">
+<li><a class="tag" href="/tags/ai/">AI</a></li><li><a class="tag" href="/tags/知识库/">知识库</a></li><li><a class="tag" href="/tags/rag/">RAG</a></li><li><a class="tag" href="/tags/本地部署/">本地部署</a></li>    </ul>
+  </header>
+  <div class="post-layout">
+    <div class="post-body prose">
+      <blockquote>
+<p>笔记之弊，在于积而不化。AI 加持，方能使藏经阁自行呼吸。</p>
+</blockquote>
+<!-- more -->
+
+<h2 id="一为什么是本地知识库">一、为什么是「本地」知识库</h2>
+<p>2026 年,把个人笔记交给云端 AI 的风险已经非常具体:数据出境、厂商锁定、以及「你的知识被拿去喂了别人的模型」。与此同时,本地推理能力大幅提升——<strong>Ollama 已成为事实上的本地推理层,llama.cpp 系的 GGUF 量化模型在消费级硬件上即可流畅运行</strong>。于是「本地知识库 + 本地模型」从极客玩具变成了严肃方案。</p>
+<p>核心理念只有一句:<strong>你的数据、你的模型、你的索引,全部留在自己机器上。</strong></p>
+<h2 id="二三种主流架构按需选择">二、三种主流架构,按需选择</h2>
+<h3 id="21-纯-rag-检索增强生成入门最快">2.1 纯 RAG 检索增强生成(入门最快)</h3>
+<p>把笔记切块 → 本地嵌入模型向量化 → 存入向量库 → 提问时检索相关块喂给本地 LLM。</p>
+<ul>
+<li>代表工具:<strong>Obsidian + Ollama/LM Studio + 本地 RAG 插件</strong>(如 obsidian-rag,支持 PDF 与 Markdown 语义检索、带引用的流式回答,完全离线,无 API key)。</li>
+<li>优点:落地快,20 分钟可跑通。</li>
+<li>缺点:对「跨笔记的关系」理解弱,知识仍是孤岛。</li>
+</ul>
+<h3 id="22-llm-wiki-模式20252026-最受关注">2.2 LLM Wiki 模式(2025—2026 最受关注)</h3>
+<p><strong>Andrej Karpathy 提出的 LLM Wiki 思路</strong>:把原始笔记丢给 LLM,由它抽取概念、自动生成相互链接的 wiki 页面,形成一个「自组织、越用越密」的知识图谱。2026 年已出现一批本地化实现:</p>
+<ul>
+<li><strong>Obsidian LLM Wiki Local</strong>:丢入 Markdown → 本地模型抽取概念 → 自动建链补文,还可拒绝草稿并说明原因,下一轮编译吸收你的反馈。</li>
+<li><strong>Athena</strong>:三层架构(原始 / wiki / schema),能摄入 URL、论文、GitHub 仓库、截图与视频,由 LLM 合成为结构化页面并与既有知识交叉引用。</li>
+<li><strong>Claude Obsidian</strong>:面向 Claude Code 的自组织「第二大脑」,任何来源都会被读取、链接、归档进一个互联的纯 Markdown 知识图谱。</li>
+</ul>
+<blockquote>
+<p>Karpathy 的观点被反复引用:一个 Markdown 知识库只有在「有不倦的维护者」时才能存活——而 AI 恰好可以承担这种维护。</p>
+</blockquote>
+<h3 id="23-graph-rag进阶关系至上">2.3 Graph RAG(进阶,关系至上)</h3>
+<p>在 RAG 之上显式构建实体-关系三元组,检索时走图,回答跨主题问题更准。</p>
+<ul>
+<li>代表工具:<strong>Kwipu</strong>——完全本地图检索引擎,从 wikilinks 与 YAML frontmatter 抽取三元组,混合检索(向量 + BM25 + 时间),多语言,跑在 Ollama 上。</li>
+<li><strong>Uru</strong>——Obsidian 插件,把整个库变成可查询的知识图谱 + 语义索引,回答带精确笔记引用。</li>
+<li><strong>Cortex</strong>——本地优先的 MCP 服务器,给任意 LLM 客户端语义 + 字面双重检索与全库读写,嵌入走 Ollama、向量走 sqlite-vec。</li>
+</ul>
+<h2 id="三2026-年的关键构件">三、2026 年的关键构件</h2>
+<table>
+<thead>
+<tr>
+<th>层</th>
+<th>推荐选择</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>笔记格式</td>
+<td>纯 Markdown</td>
+<td>不锁定、可迁移、可版本管理</td>
+</tr>
+<tr>
+<td>本地模型</td>
+<td>Ollama / LM Studio</td>
+<td>事实标准的本地推理入口</td>
+</tr>
+<tr>
+<td>嵌入模型</td>
+<td>Ollama 内置(如 nomic-embed-text)</td>
+<td>无需额外服务</td>
+</tr>
+<tr>
+<td>向量库</td>
+<td>sqlite-vec / Chroma</td>
+<td>轻量、随笔记库走</td>
+</tr>
+<tr>
+<td>连接层</td>
+<td>MCP(如 Cortex)</td>
+<td>让任意 LLM 客户端都能读写你的库</td>
+</tr>
+<tr>
+<td>检索增强</td>
+<td>混合检索(向量+BM25+时间)</td>
+<td>兼顾语义与关键词精确命中</td>
+</tr>
+</tbody>
+</table>
+<h2 id="四落地路线图一周内可完成">四、落地路线图(一周内可完成)</h2>
+<ol>
+<li><strong>第 1 天</strong>:装 Ollama,拉一个 7B~14B 模型;建纯 Markdown 笔记目录,用 Git 管理。</li>
+<li><strong>第 2 天</strong>:上最小 RAG(Obsidian + 本地 RAG 插件),把 PDF 和旧笔记喂进去,验证「问库有答、答有出处」。</li>
+<li><strong>第 3~4 天</strong>:升级 LLM Wiki 模式,让本地模型把散笔记抽成互链 wiki,观察知识图自动长密。</li>
+<li><strong>第 5 天</strong>:若你有跨主题的重度问答需求,加 Graph RAG(Kwipu 或 Uru),测试「A 项目与 B 项目之间的关系」这类问题。</li>
+<li><strong>第 6 天起</strong>:把「摄入 → 抽链 → 问答」固化成一个脚本(或 MCP 服务),每次丢进新素材即自动入库。</li>
+</ol>
+<h2 id="五避坑清单">五、避坑清单</h2>
+<ol>
+<li><strong>别把原始 PDF 当检索单元</strong>:按节切块、保留标题上下文,否则语义检索稀碎。</li>
+<li><strong>嵌入与问答模型分开选</strong>:嵌入用轻量模型,生成用稍大模型,性价比最高。</li>
+<li><strong>一定要有引用</strong>:任何回答都要能点回原始笔记,否则知识库会悄悄「编」。</li>
+<li><strong>定期人工修剪</strong>:AI 维护 ≠ 放任自流,每周删冗余、合并重复,知识库才会复利增长。</li>
+<li><strong>本地 ≠ 不备份</strong>:Git 仓库 + 冷备,双保险。</li>
+</ol>
+<h2 id="六结语">六、结语</h2>
+<p>2026 年的个人知识库,不再是「收集箱」,而是<strong>一座有 AI 书童常驻打理、自己会生长链接、只属于你的藏经阁</strong>。从最小 RAG 起步,向 LLM Wiki 与 Graph RAG 演进,你的笔记会从「存档」变成「资产」。</p>
+<p>记住那句话:数据不出门,智慧自内生。</p>
+    </div>
+    <aside class="toc" aria-label="章节目录">
+      <p class="toc-title">卷目</p>
+      <ol>
+        <li class="toc-l2"><a href="#一为什么是本地知识库">一、为什么是「本地」知识库</a></li>
+        <li class="toc-l2"><a href="#二三种主流架构按需选择">二、三种主流架构,按需选择</a></li>
+        <li class="toc-l3"><a href="#21-纯-rag-检索增强生成入门最快">2.1 纯 RAG 检索增强生成(入门最快)</a></li>
+        <li class="toc-l3"><a href="#22-llm-wiki-模式20252026-最受关注">2.2 LLM Wiki 模式(2025—2026 最受关注)</a></li>
+        <li class="toc-l3"><a href="#23-graph-rag进阶关系至上">2.3 Graph RAG(进阶,关系至上)</a></li>
+        <li class="toc-l2"><a href="#三2026-年的关键构件">三、2026 年的关键构件</a></li>
+        <li class="toc-l2"><a href="#四落地路线图一周内可完成">四、落地路线图(一周内可完成)</a></li>
+        <li class="toc-l2"><a href="#五避坑清单">五、避坑清单</a></li>
+        <li class="toc-l2"><a href="#六结语">六、结语</a></li>
+      </ol>
+    </aside>
+  </div>
+  <section class="related" aria-label="相关文章">
+    <h2>他山之石 · 相关文章</h2>
+    <div class="related-list">
+      <a class="related-card" href="/posts/ai-agent本地小模型部署综述/">
+        <span class="related-date">2026-09-18</span>
+        <span class="related-title">方寸之地：AI Agent 本地部署小模型综述</span>
+      </a>
+      <a class="related-card" href="/posts/ai总体态势综述/">
+        <span class="related-date">2026-09-18</span>
+        <span class="related-title">问道AI：2026 年人工智能总体态势综述</span>
+      </a>
+      <a class="related-card" href="/posts/ai-agent辅助编程进展/">
+        <span class="related-date">2026-09-18</span>
+        <span class="related-title">御剑炼丹：AI Agent 辅助编程的技术进展综述</span>
+      </a>
+    </div>
+  </section>
+  <nav class="post-nav" aria-label="上一篇/下一篇">
+<a class="post-nav-next" href="/posts/ai总体态势综述/">问道AI：2026 年人工智能总体态势综述 →</a>  </nav>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="cloud-divider" aria-hidden="true">
+    <svg viewBox="0 0 480 18" role="presentation"><use href="#cloud-symbol" x="0"/><use href="#cloud-symbol" x="144"/><use href="#cloud-symbol" x="288"/><use href="#cloud-symbol" x="432" transform="scale(-1,1) translate(-480,0)"/></svg>
+  </div>
+  <p class="footer-line">剑气纵横三万里，一剑光寒十九州。</p>
+  <p class="footer-meta">© 2026 无名散修 · 由 post-generator 铸造 · <a href="/atom.xml">Atom</a> / <a href="/rss.xml">RSS</a></p>
+</footer>
+<div id="search-panel" class="search-panel" hidden aria-hidden="true">
+  <div class="search-box" role="dialog" aria-modal="true" aria-labelledby="search-title">
+    <h2 id="search-title" class="visually-hidden">站内搜索</h2>
+    <div class="search-field">
+      <label class="visually-hidden" for="search-input">搜索关键词</label>
+      <input id="search-input" type="search" placeholder="搜剑诀、丹方、见闻…" autocomplete="off">
+      <button id="search-close" class="icon-btn" aria-label="关闭搜索">✕</button>
+    </div>
+    <p id="search-status" class="search-status" role="status"></p>
+    <ul id="search-results" class="search-results"></ul>
+  </div>
+</div>
+<script src="/assets/search-index.js" defer></script>
+<script src="/assets/js/theme.js" defer></script>
+<script src="/assets/js/search.js" defer></script>
+<script src="/assets/js/main.js" defer></script>
+</body>
+</html>

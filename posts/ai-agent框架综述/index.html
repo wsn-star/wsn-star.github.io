@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>众仙摆阵：AI Agent 框架全景综述 · 青云志</title>
+<meta name="description" content="LangGraph、CrewAI、OpenAI Agents SDK、AutoGen/AG2、Claude Agent SDK……2026 年 agent 框架已从「卷概念」走向「卷工程」。逐家拆解,并给一张真正可用的选型决策表。">
+<link rel="canonical" href="https://wsn-star.github.io/posts/ai-agent%E6%A1%86%E6%9E%B6%E7%BB%BC%E8%BF%B0/"><meta name="generator" content="post-generator v0.1.0">
+<meta name="theme-color" content="#141c21">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "author": {"@type": "Person", "name": "\u65e0\u540d\u6563\u4fee"}, "dateModified": "2026-09-18T00:00:00-04:00", "datePublished": "2026-09-18T00:00:00-04:00", "description": "LangGraph\u3001CrewAI\u3001OpenAI Agents SDK\u3001AutoGen/AG2\u3001Claude Agent SDK\u2026\u20262026 \u5e74 agent \u6846\u67b6\u5df2\u4ece\u300c\u5377\u6982\u5ff5\u300d\u8d70\u5411\u300c\u5377\u5de5\u7a0b\u300d\u3002\u9010\u5bb6\u62c6\u89e3,\u5e76\u7ed9\u4e00\u5f20\u771f\u6b63\u53ef\u7528\u7684\u9009\u578b\u51b3\u7b56\u8868\u3002", "headline": "\u4f17\u4ed9\u6446\u9635\uff1aAI Agent \u6846\u67b6\u5168\u666f\u7efc\u8ff0", "keywords": "AI\uff0cAgent\uff0c\u6846\u67b6\uff0cLangGraph\uff0cCrewAI", "mainEntityOfPage": "https://wsn-star.github.io/posts/ai-agent%E6%A1%86%E6%9E%B6%E7%BB%BC%E8%BF%B0/"}</script><link rel="stylesheet" href="/assets/css/xianxia.css">
+<link rel="stylesheet" href="/assets/css/blog.css">
+<script>document.documentElement.dataset.theme = localStorage.getItem('xianxia-theme') || 'light';
+window.BLOG_ROOT = "";</script>
+</head>
+<body class="xianxia">
+<svg class="deco-svg" aria-hidden="true"><defs>
+  <symbol id="cloud-symbol" viewBox="0 0 48 16">
+    <path d="M24 2c-3.2 0-5.8 2-6.9 4.8C13.9 6.2 11 8.4 11 11.2 11 14 13.4 16 16.4 16h15.2c3 0 5.4-2 5.4-4.8 0-2.8-2.9-5-6.1-5.2C29.8 3.4 27.2 2 24 2z" fill="currentColor" opacity=".55"/>
+    <circle cx="38" cy="6" r="4.5" fill="currentColor" opacity=".3"/>
+    <circle cx="8" cy="10" r="3" fill="currentColor" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <nav class="nav-bar" aria-label="主导航">
+    <a class="brand" href="/">青云志</a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="site-menu" aria-label="打开菜单">☰</button>
+    <ul class="site-menu" id="site-menu">
+      <li><a href="/">首页</a></li>
+      <li><a href="/archives/">归档</a></li>
+      <li><a href="/tags/">标签</a></li>
+<li><a href="/关于/">关于</a></li>      <li><a href="/rss.xml">订阅</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button id="search-open" class="icon-btn" aria-label="搜索" aria-haspopup="dialog">🔍</button>
+      <button id="theme-toggle" class="icon-btn" aria-label="切换明暗主题" title="切换明暗">🌙</button>
+    </div>
+  </nav>
+</header>
+<main id="main" class="container">
+<article class="post">
+  <header class="post-head">
+    <p class="post-route"><a href="/">首页</a> › <a href="/tags/">标签</a> › <a href="/archives/">归档</a></p>
+    <h1 class="post-title">众仙摆阵：AI Agent 框架全景综述</h1>
+    <div class="post-meta">
+      <time datetime="2026-09-18">2026年09月18日</time>
+      <span>约 4 分钟</span>
+<span>无名散修</span>    </div>
+    <ul class="tag-list" aria-label="标签">
+<li><a class="tag" href="/tags/ai/">AI</a></li><li><a class="tag" href="/tags/agent/">Agent</a></li><li><a class="tag" href="/tags/框架/">框架</a></li><li><a class="tag" href="/tags/langgraph/">LangGraph</a></li><li><a class="tag" href="/tags/crewai/">CrewAI</a></li>    </ul>
+  </header>
+  <div class="post-layout">
+    <div class="post-body prose">
+      <blockquote>
+<p>昔者各据一隅,今则百器争鸣。铸造术之盛,莫过于此。</p>
+</blockquote>
+<!-- more -->
+
+<h2 id="一时代背景框架们成年了">一、时代背景：框架们「成年」了</h2>
+<p>2023 年,"做一个 AI agent"意味着用 while 循环包一层 GPT-4 调工具。到 2026 年,<strong>框架已经追上真实生产 agent 系统的复杂度</strong>。最关键的转折:</p>
+<ul>
+<li><strong>基础实验室亲自下场</strong>:OpenAI、Google、Microsoft 都发布了第一方 agent 框架,结束了独立框架"一家独大"的局面。</li>
+<li><strong>两个标志性事件</strong>:
+  1. <strong>OpenAI Swarm 退役</strong>,被正式开源的 <strong>OpenAI Agents SDK</strong> 取代;
+  2. <strong>Anthropic 把 Claude Code SDK 更名为 Claude Agent SDK</strong>,宣告它不再是"仅编码"工具。</li>
+<li><strong>LangGraph 0.3</strong> 把 <strong>中断与人工介入(human-in-the-loop)</strong> 提升为一等公民。</li>
+</ul>
+<h2 id="二头部框架逐项拆解">二、头部框架逐项拆解</h2>
+<h3 id="21-langgraphstateful-图式工作流">2.1 LangGraph(STateful 图式工作流)</h3>
+<ul>
+<li>定位:<strong>有状态、图式控制流</strong>的 agent 工作流,默认选型用于复杂 Python 流程。</li>
+<li>形态:把 agent 编排成一张<strong>图</strong>,节点 = 步骤,边 = 转移,天然支持分支/循环/并行。</li>
+<li>硬实力:<strong>内置 checkpointing(回滚/恢复)</strong>、模型无关、34.5M 月下载量,被 Klarna、Replit、Elastic 采用。</li>
+<li>代价:<strong>学习曲线最陡(1~2 周)</strong>,上手不如脚本派快。</li>
+</ul>
+<h3 id="22-crewai角色制多智能体团队">2.2 CrewAI(角色制多智能体团队)</h3>
+<ul>
+<li>定位:<strong>基于角色的多 agent 协作</strong>(" crew ",团队模式),约 20 行 Python 出一个可用原型。</li>
+<li>演进到 v1.12:<strong>agent skills、原生 OpenAI 兼容供应商(OpenRouter/DeepSeek/Ollama/vLLM/Cerebras/Dashscope)、Qdrant Edge 记忆后端、分层记忆隔离</strong>。</li>
+<li>数据:52.8K stars / 5.2M 下载,学习约 3~5 天,靠速度与直观取胜。</li>
+</ul>
+<h3 id="23-openai-agents-sdk极简">2.3 OpenAI Agents SDK(极简)</h3>
+<ul>
+<li>定位:官方 SDK,在 OpenAI 技术栈上的<strong>最小抽象</strong>。</li>
+<li>新特性强大:通过 <strong>LiteLLM 实现供应商无关、支持 100+ 模型</strong>;10.3M 下载,是团队已扎根 OpenAI 生态时最快开跑的多 agent 路径。</li>
+<li>代价:想换到非 OpenAI 生态时有一定锁定。</li>
+</ul>
+<h3 id="24-autogen-ag2-microsoft-agent-framework">2.4 AutoGen / AG2 / Microsoft Agent Framework</h3>
+<ul>
+<li><strong>AutoGen 0.4</strong>:一次 actor-model 重写,转向事件驱动架构;<strong>AG2 是 ground-up 重新设计的 Beta</strong>,强调流式与事件驱动。</li>
+<li>Microsoft 走<strong>双轨</strong>(AutoGen 0.4 + Semantic Kernel Agent Framework),一个偏研究探索、一个偏企业落地。</li>
+</ul>
+<h3 id="25-其它值得点名">2.5 其它值得点名</h3>
+<ul>
+<li><strong>Claude Agent SDK</strong>:Anthropic 把编码工具身份扩大为通用 agent 平台,背靠其强大的 harness(见 Harness 篇)。</li>
+<li><strong>Google ADK(Agent Development Kit)</strong>:google 第一方,与 Gemini 深度整合。</li>
+<li><strong>LlamaIndex / Pydantic AI / Vercel AI SDK</strong>:分别主打数据编排、类型安全、前端集成,各据一方。</li>
+<li><strong>Mastra / Cargo AI / AWS Strands Agents</strong> 等新兴势力,AWS 亦在 agent 编排领域布局。</li>
+</ul>
+<h2 id="三选型决策矩阵可操作">三、选型决策矩阵(可操作)</h2>
+<p>这是本综述的核心实用产出——按你的场景对号入座:</p>
+<table>
+<thead>
+<tr>
+<th>你的需求</th>
+<th>首选框架</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>有状态、复杂分支/循环、可回滚</td>
+<td>LangGraph</td>
+<td>checkpointing + 图控制流</td>
+</tr>
+<tr>
+<td>多角色协作、快速原型</td>
+<td>CrewAI</td>
+<td>role-based 团队,20 行出活</td>
+</tr>
+<tr>
+<td>已在 OpenAI 栈、要最小抽象</td>
+<td>OpenAI Agents SDK</td>
+<td>官方、快、LiteLLM 多模型</td>
+</tr>
+<tr>
+<td>研究型事件流 agent</td>
+<td>AG2(AutoGen)</td>
+<td>事件驱动重设计</td>
+</tr>
+<tr>
+<td>企业级 + 微软生态</td>
+<td>Semantic Kernel Agent FW</td>
+<td>双轨里的落地轨</td>
+</tr>
+<tr>
+<td>通用自治能力 + 强悍 harness</td>
+<td>Claude Agent SDK</td>
+<td>Anthropic 全栈</td>
+</tr>
+<tr>
+<td>数据密集、检索驱动</td>
+<td>LlamaIndex / ADS</td>
+<td>数据编排优</td>
+</tr>
+</tbody>
+</table>
+<h2 id="四2026-年的三大共性趋势">四、2026 年的三大共性趋势</h2>
+<ol>
+<li><strong>可观测性成为标配</strong>:agent 不再" 黑盒",trace、中间状态、人工介入点都是框架内建能力(Ry Walker 对 13 个框架的横向评测里,observability 是核心维度)。</li>
+<li><strong>记忆与上下文工程化</strong>:Qdrant Edge 记忆、分层隔离、记忆后端化——长期记忆不再是玩具。</li>
+<li><strong>模型无关 vs 生态绑定之争</strong>:一边是 LiteLLM/OpenRouter 式的" 什么模型都能接",一边是官方 SDK 的深度锁定,选型时要想清楚自己在哪边。</li>
+</ol>
+<h2 id="五避坑与建议">五、避坑与建议</h2>
+<ol>
+<li><strong>别让框架决定业务</strong>。先用手画出你 agent 的流程图(状态、分支、人工卡点 To be selected),再挑能原生表达它的框架。</li>
+<li><strong>警惕"Hype 改命"</strong>:LangGraph 学习曲线背后的价值是" 有状态、可回滚",如果你只需一个简单循环,OpenAI SDK / CrewAI 更快,别为过度工程买单。</li>
+<li><strong>一定要有人工介入点</strong>:把 human-in-the-loop(如 LangGraph 的 interrupt)设计成默认,而不是事后补丁——这关乎可控性。</li>
+<li><strong>企业选型看可观测性与安全</strong>:选带好 trace 与记忆隔离的,别选最炫的。</li>
+</ol>
+<h2 id="六结语">六、结语</h2>
+<p>2026 年的 agent 框架,已从" 证明你也能写个 agent"的炫技阶段,进入" <strong>管得住、看得见、能回滚、敢上生产</strong>"的工程阶段。真正的选型智慧,不是追最火的名字,而是:<strong>让框架匹配你的状态拓扑,让你永远握有人工介入的缰绳。</strong></p>
+<p>摆阵容易,驭阵在人。</p>
+    </div>
+    <aside class="toc" aria-label="章节目录">
+      <p class="toc-title">卷目</p>
+      <ol>
+        <li class="toc-l2"><a href="#一时代背景框架们成年了">一、时代背景：框架们「成年」了</a></li>
+        <li class="toc-l2"><a href="#二头部框架逐项拆解">二、头部框架逐项拆解</a></li>
+        <li class="toc-l3"><a href="#21-langgraphstateful-图式工作流">2.1 LangGraph(STateful 图式工作流)</a></li>
+        <li class="toc-l3"><a href="#22-crewai角色制多智能体团队">2.2 CrewAI(角色制多智能体团队)</a></li>
+        <li class="toc-l3"><a href="#23-openai-agents-sdk极简">2.3 OpenAI Agents SDK(极简)</a></li>
+        <li class="toc-l3"><a href="#24-autogen-ag2-microsoft-agent-framework">2.4 AutoGen / AG2 / Microsoft Agent Framework</a></li>
+        <li class="toc-l3"><a href="#25-其它值得点名">2.5 其它值得点名</a></li>
+        <li class="toc-l2"><a href="#三选型决策矩阵可操作">三、选型决策矩阵(可操作)</a></li>
+        <li class="toc-l2"><a href="#四2026-年的三大共性趋势">四、2026 年的三大共性趋势</a></li>
+        <li class="toc-l2"><a href="#五避坑与建议">五、避坑与建议</a></li>
+        <li class="toc-l2"><a href="#六结语">六、结语</a></li>
+      </ol>
+    </aside>
+  </div>
+  <section class="related" aria-label="相关文章">
+    <h2>他山之石 · 相关文章</h2>
+    <div class="related-list">
+      <a class="related-card" href="/posts/ai-agent辅助编程进展/">
+        <span class="related-date">2026-09-18</span>
+        <span class="related-title">御剑炼丹：AI Agent 辅助编程的技术进展综述</span>
+      </a>
+      <a class="related-card" href="/posts/ai-agent-harness综述/">
+        <span class="related-date">2026-09-18</span>
+        <span class="related-title">铸甲驭灵：AI Agent 的 Harness 工程综述</span>
+      </a>
+      <a class="related-card" href="/posts/ai本地个人知识库建设/">
+        <span class="related-date">2026-09-18</span>
+        <span class="related-title">问道阁：AI 加持的本地个人知识库建设指南</span>
+      </a>
+    </div>
+  </section>
+  <nav class="post-nav" aria-label="上一篇/下一篇">
+<a class="post-nav-prev" href="/posts/ai-agent辅助编程进展/">← 御剑炼丹：AI Agent 辅助编程的技术进展综述</a><a class="post-nav-next" href="/posts/ai-agent本地小模型部署综述/">方寸之地：AI Agent 本地部署小模型综述 →</a>  </nav>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="cloud-divider" aria-hidden="true">
+    <svg viewBox="0 0 480 18" role="presentation"><use href="#cloud-symbol" x="0"/><use href="#cloud-symbol" x="144"/><use href="#cloud-symbol" x="288"/><use href="#cloud-symbol" x="432" transform="scale(-1,1) translate(-480,0)"/></svg>
+  </div>
+  <p class="footer-line">剑气纵横三万里，一剑光寒十九州。</p>
+  <p class="footer-meta">© 2026 无名散修 · 由 post-generator 铸造 · <a href="/atom.xml">Atom</a> / <a href="/rss.xml">RSS</a></p>
+</footer>
+<div id="search-panel" class="search-panel" hidden aria-hidden="true">
+  <div class="search-box" role="dialog" aria-modal="true" aria-labelledby="search-title">
+    <h2 id="search-title" class="visually-hidden">站内搜索</h2>
+    <div class="search-field">
+      <label class="visually-hidden" for="search-input">搜索关键词</label>
+      <input id="search-input" type="search" placeholder="搜剑诀、丹方、见闻…" autocomplete="off">
+      <button id="search-close" class="icon-btn" aria-label="关闭搜索">✕</button>
+    </div>
+    <p id="search-status" class="search-status" role="status"></p>
+    <ul id="search-results" class="search-results"></ul>
+  </div>
+</div>
+<script src="/assets/search-index.js" defer></script>
+<script src="/assets/js/theme.js" defer></script>
+<script src="/assets/js/search.js" defer></script>
+<script src="/assets/js/main.js" defer></script>
+</body>
+</html>
