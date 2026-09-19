@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://wsn-star.github.io/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
+  <url><loc>https://wsn-star.github.io/posts/%E6%AF%8F%E6%97%A5ai%E5%AF%BC%E8%AF%BB-3/</loc><lastmod>2026-09-18</lastmod><priority>0.8</priority></url>
   <url><loc>https://wsn-star.github.io/posts/%E6%AF%8F%E6%97%A5ai%E5%AF%BC%E8%AF%BB-2/</loc><lastmod>2026-09-18</lastmod><priority>0.8</priority></url>
   <url><loc>https://wsn-star.github.io/posts/%E6%AF%8F%E6%97%A5ai%E5%AF%BC%E8%AF%BB/</loc><lastmod>2026-09-18</lastmod><priority>0.8</priority></url>
   <url><loc>https://wsn-star.github.io/posts/ai%E6%9C%AC%E5%9C%B0%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E5%BA%93%E5%BB%BA%E8%AE%BE/</loc><lastmod>2026-09-18</lastmod><priority>0.8</priority></url>
@@ -11,8 +12,8 @@
   <url><loc>https://wsn-star.github.io/posts/ai-agent-harness%E7%BB%BC%E8%BF%B0/</loc><lastmod>2026-09-18</lastmod><priority>0.8</priority></url>
   <url><loc>https://wsn-star.github.io/tags/ai/</loc><priority>0.5</priority></url>
   <url><loc>https://wsn-star.github.io/tags/agent/</loc><priority>0.5</priority></url>
-  <url><loc>https://wsn-star.github.io/tags/%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2/</loc><priority>0.5</priority></url>
   <url><loc>https://wsn-star.github.io/tags/%E6%AF%8F%E6%97%A5%E5%AF%BC%E8%AF%BB/</loc><priority>0.5</priority></url>
+  <url><loc>https://wsn-star.github.io/tags/%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2/</loc><priority>0.5</priority></url>
   <url><loc>https://wsn-star.github.io/tags/%E7%BB%BC%E8%BF%B0/</loc><priority>0.5</priority></url>
   <url><loc>https://wsn-star.github.io/tags/crewai/</loc><priority>0.5</priority></url>
   <url><loc>https://wsn-star.github.io/tags/harness/</loc><priority>0.5</priority></url>
