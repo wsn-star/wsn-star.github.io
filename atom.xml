@@ -318,6 +318,93 @@
 &lt;p&gt;源码与全部文档在 &lt;code&gt;D:\prj\evox-agent\website_generator&lt;/code&gt;（&lt;code&gt;docs/&lt;/code&gt; 有详细设计说明书与使用手册）。&lt;/p&gt;</content>
   </entry>
   <entry>
+    <title>llama.cpp 显存够用却大量占用内存（RAM）的排查与修复</title>
+    <link href="https://wsn-star.github.io/posts/llamacpp%E6%98%BE%E5%AD%98%E4%B8%8E%E5%86%85%E5%AD%98%E6%8E%92%E6%9F%A5/"/>
+    <id>https://wsn-star.github.io/posts/llamacpp%E6%98%BE%E5%AD%98%E4%B8%8E%E5%86%85%E5%AD%98%E6%8E%92%E6%9F%A5/</id>
+    <published>2026-09-19T00:00:00-04:00</published>
+    <updated>2026-09-19T00:00:00-04:00</updated>
+<category term="AI"/><category term="本地模型"/><category term="llama.cpp"/><category term="工程实践"/><category term="故障排查"/>    <summary>8GB 显存机器上跑本地模型时，&#34;显存看似够用、内存却被大量占用&#34;是常见困惑。本文梳理三个根因——KV Cache 随上下文窗口预分配、未开启 GPU 硬件加速、mmap 把模型文件映射进内存——并给出逐步排查与修复参数。</summary>
+    <content type="html">&lt;h2 id=&#34;一问题现象&#34;&gt;一、问题现象&lt;/h2&gt;
+&lt;p&gt;在 8GB 显存的机器上跑本地大模型，一个常见困惑是：&lt;strong&gt;显存明明显示够用，内存（RAM）却依然被大量占用&lt;/strong&gt;。模型文件只有几个 GB，跑起来却&#34;不止那几个 GB&#34;，系统内存被吃满，Windows 开始疯狂换页，整机变卡。&lt;/p&gt;
+&lt;h2 id=&#34;二根因模型文件-运行时占用&#34;&gt;二、根因：模型文件 ≠ 运行时占用&lt;/h2&gt;
+&lt;p&gt;一个 4.8GB 的 GGUF 模型，运行时占用的资源远不止 4.8GB：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;模型权重&lt;/strong&gt;本身（约 4.8GB，全部或部分驻留显存）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;KV Cache（上下文缓存）&lt;/strong&gt;——llama.cpp 启动时按 &lt;code&gt;-c&lt;/code&gt;（上下文窗口大小）&lt;strong&gt;预先分配&lt;/strong&gt;，用来记忆对话/续写上下文&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;运行时开销&lt;/strong&gt;——分词器、采样器、系统库等&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;关键在第二项：KV Cache 的大小与上下文窗口成正比。&lt;code&gt;-c 4096&lt;/code&gt; 与 &lt;code&gt;-c 32768&lt;/code&gt; 的缓存差一个量级——上下文设得越大（比如 32k / 64k），缓存越容易额外吃掉 &lt;strong&gt;2GB–4GB&lt;/strong&gt; 显存。&lt;/p&gt;
+&lt;h3 id=&#34;8gb-显存上的饱和算式&#34;&gt;8GB 显存上的&#34;饱和算式&#34;&lt;/h3&gt;
+&lt;p&gt;以本机 RTX 5060 8GB 为例：&lt;/p&gt;
+&lt;div class=&#34;codehilite&#34;&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;4.8GB（模型权重） + 3GB（KV Cache） = 7.8GB ≈ 8GB 显存打满
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;一旦打满，Windows 就会把溢出的部分换到系统内存——表现就是&#34;显存恰好打满、内存却大量占用&#34;，两者同时告急。&lt;/p&gt;
+&lt;h2 id=&#34;三三个常见成因&#34;&gt;三、三个常见成因&lt;/h2&gt;
+&lt;p&gt;llama.cpp 显存够用却依然大量占用 RAM，通常来自以下三条，按排查顺序列出：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;未开启 GPU 硬件加速编译&lt;/strong&gt;：llama.cpp 二进制没带 CUDA 支持时，&lt;code&gt;-ngl&lt;/code&gt; 形同虚设，所有层都在 CPU 上跑，权重全量留在内存&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;未正确设置把全部层加载到显存&lt;/strong&gt;：&lt;code&gt;-ngl&lt;/code&gt; 层数设得过小（如 &lt;code&gt;-ngl 0&lt;/code&gt; 纯 CPU），部分层驻留内存&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;操作系统 mmap 机制&lt;/strong&gt;：默认 mmap 把模型文件映射到内存，文件页缓存会吃 RAM（&lt;code&gt;--no-mmap&lt;/code&gt; 可关闭）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;四修复先把上下文窗口钳到安全基线&#34;&gt;四、修复：先把上下文窗口钳到安全基线&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;第一步（最关键）&lt;/strong&gt;，把上下文窗口钳到安全值：&lt;/p&gt;
+&lt;div class=&#34;codehilite&#34;&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;llama-cli&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;-m&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&amp;lt;model&amp;gt;.gguf&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;-c&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;4096&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;   &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# 或 -c 8192&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code&gt;-c 2048&lt;/code&gt; 同样安全（本仓库流水线默认即 2048，远低于 32k 阈值，KV Cache 规模可控）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;第二步&lt;/strong&gt;，逐个变量排查。在命令末尾追加：&lt;/p&gt;
+&lt;div class=&#34;codehilite&#34;&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;llama-cli&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;-m&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&amp;lt;model&amp;gt;.gguf&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;--no-mmap&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;-c&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;4096&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;-ngl&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;-1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;--no-mmap&lt;/code&gt;：关闭 mmap，排除&#34;文件被映射进内存&#34;这一变量&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-c 4096&lt;/code&gt;：钳住 KV Cache 规模&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-ngl -1&lt;/code&gt;：把全部层 offload 到 GPU（前提：二进制带 CUDA 支持，且显存放得下）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;第三步&lt;/strong&gt;，若内存占用仍然很高，把 llama.cpp 启动时&lt;strong&gt;前 20 行终端输出&lt;/strong&gt;贴出来排查——带 &lt;code&gt;ggml_cuda&lt;/code&gt; 的行会直接说明问题出在哪：是否识别到 GPU、实际 offload 了多少层、KV Cache 分配了多大。&lt;/p&gt;
+&lt;h2 id=&#34;五与本仓库流水线的对照&#34;&gt;五、与本仓库流水线的对照&lt;/h2&gt;
+&lt;p&gt;本仓库每日导读流水线（&lt;code&gt;scripts/daily_ai_agent.py&lt;/code&gt;）已踩过这条线，参数现状：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;后端&lt;/th&gt;
+&lt;th&gt;上下文&lt;/th&gt;
+&lt;th&gt;GPU 参数&lt;/th&gt;
+&lt;th&gt;说明&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;llama-cli（7B）&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;-c 2048&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;-ngl 0&lt;/code&gt; 纯 CPU&lt;/td&gt;
+&lt;td&gt;7B 小模型 CPU 即可满足&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;llama-cli（9B）&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;-c 2048&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;-ngl 12&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;8GB 显存下 9B 的层数上限（&lt;code&gt;-ngl 14&lt;/code&gt; 临界、&lt;code&gt;-ngl 16&lt;/code&gt; OOM）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Ollama（9B）&lt;/td&gt;
+&lt;td&gt;Ollama 自动&lt;/td&gt;
+&lt;td&gt;自动管理&lt;/td&gt;
+&lt;td&gt;GPU 利用率 ~94%，接近全量进显存&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;对照上面的排查清单：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;上下文已达标&lt;/strong&gt;：全部入口统一 &lt;code&gt;-c 2048&lt;/code&gt;，KV Cache 规模远低于 32k 阈值，无需再加 &lt;code&gt;-c 4096&lt;/code&gt; 钳制&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;9B 无法 &lt;code&gt;-ngl -1&lt;/code&gt;&lt;/strong&gt;：8GB 显存放不下 9B 全量层，实测上限 &lt;code&gt;-ngl 12&lt;/code&gt;；这正是当初引入 Ollama 后端的直接原因&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Ollama 是终局方案&lt;/strong&gt;：内部自动管理 KV Cache 与层 offload，GPU 利用率 94%（llama-cli 仅 ~19%），从源头避开 mmap 与 &lt;code&gt;-ngl&lt;/code&gt; 手动调优问题&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;六小结&#34;&gt;六、小结&lt;/h2&gt;
+&lt;p&gt;排查顺序一句话：&lt;strong&gt;先钳上下文（&lt;code&gt;-c 4096&lt;/code&gt; / &lt;code&gt;-c 8192&lt;/code&gt;），再关 mmap（&lt;code&gt;--no-mmap&lt;/code&gt;），最后看 &lt;code&gt;ggml_cuda&lt;/code&gt; 头几行确认 GPU offload 是否生效&lt;/strong&gt;。模型文件大小只是起点——KV Cache 规模与层 offload 策略，才是 8GB 显存机器上内存/显存账本的真正变量。&lt;/p&gt;</content>
+  </entry>
+  <entry>
     <title>每日 AI 导读:2026-09-18</title>
     <link href="https://wsn-star.github.io/posts/%E6%AF%8F%E6%97%A5ai%E5%AF%BC%E8%AF%BB-5/"/>
     <id>https://wsn-star.github.io/posts/%E6%AF%8F%E6%97%A5ai%E5%AF%BC%E8%AF%BB-5/</id>

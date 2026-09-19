@@ -16,6 +16,13 @@
     <description><![CDATA[在 8GB 显存的本机上，用 5 个本地小模型 + 双推理后端（llama.cpp / Ollama）搭建每日 AI 导读流水线的完整记录：设计原理、实测对比、使用指南与踩坑经验。]]></description>
 <category>AI</category><category>每日导读</category><category>Agent</category><category>本地模型</category><category>Ollama</category><category>llama.cpp</category><category>工程实践</category>  </item>
   <item>
+    <title>llama.cpp 显存够用却大量占用内存（RAM）的排查与修复</title>
+    <link>https://wsn-star.github.io/posts/llamacpp%E6%98%BE%E5%AD%98%E4%B8%8E%E5%86%85%E5%AD%98%E6%8E%92%E6%9F%A5/</link>
+    <guid isPermaLink="true">https://wsn-star.github.io/posts/llamacpp%E6%98%BE%E5%AD%98%E4%B8%8E%E5%86%85%E5%AD%98%E6%8E%92%E6%9F%A5/</guid>
+    <pubDate>Sat, 19 Sep 2026 00:00:00 -0400</pubDate>
+    <description><![CDATA[8GB 显存机器上跑本地模型时，&#34;显存看似够用、内存却被大量占用&#34;是常见困惑。本文梳理三个根因——KV Cache 随上下文窗口预分配、未开启 GPU 硬件加速、mmap 把模型文件映射进内存——并给出逐步排查与修复参数。]]></description>
+<category>AI</category><category>本地模型</category><category>llama.cpp</category><category>工程实践</category><category>故障排查</category>  </item>
+  <item>
     <title>每日 AI 导读:2026-09-18</title>
     <link>https://wsn-star.github.io/posts/%E6%AF%8F%E6%97%A5ai%E5%AF%BC%E8%AF%BB-5/</link>
     <guid isPermaLink="true">https://wsn-star.github.io/posts/%E6%AF%8F%E6%97%A5ai%E5%AF%BC%E8%AF%BB-5/</guid>

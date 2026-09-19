@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>llama.cpp 显存够用却大量占用内存（RAM）的排查与修复 · 青云志</title>
+<meta name="description" content="8GB 显存机器上跑本地模型时，&#34;显存看似够用、内存却被大量占用&#34;是常见困惑。本文梳理三个根因——KV Cache 随上下文窗口预分配、未开启 GPU 硬件加速、mmap 把模型文件映射进内存——并给出逐步排查与修复参数。">
+<link rel="canonical" href="https://wsn-star.github.io/posts/llamacpp%E6%98%BE%E5%AD%98%E4%B8%8E%E5%86%85%E5%AD%98%E6%8E%92%E6%9F%A5/"><meta name="generator" content="post-generator v0.1.0">
+<meta name="theme-color" content="#141c21">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "author": {"@type": "Person", "name": "\u65e0\u540d\u6563\u4fee"}, "dateModified": "2026-09-19T00:00:00-04:00", "datePublished": "2026-09-19T00:00:00-04:00", "description": "8GB \u663e\u5b58\u673a\u5668\u4e0a\u8dd1\u672c\u5730\u6a21\u578b\u65f6\uff0c\"\u663e\u5b58\u770b\u4f3c\u591f\u7528\u3001\u5185\u5b58\u5374\u88ab\u5927\u91cf\u5360\u7528\"\u662f\u5e38\u89c1\u56f0\u60d1\u3002\u672c\u6587\u68b3\u7406\u4e09\u4e2a\u6839\u56e0\u2014\u2014KV Cache \u968f\u4e0a\u4e0b\u6587\u7a97\u53e3\u9884\u5206\u914d\u3001\u672a\u5f00\u542f GPU \u786c\u4ef6\u52a0\u901f\u3001mmap \u628a\u6a21\u578b\u6587\u4ef6\u6620\u5c04\u8fdb\u5185\u5b58\u2014\u2014\u5e76\u7ed9\u51fa\u9010\u6b65\u6392\u67e5\u4e0e\u4fee\u590d\u53c2\u6570\u3002", "headline": "llama.cpp \u663e\u5b58\u591f\u7528\u5374\u5927\u91cf\u5360\u7528\u5185\u5b58\uff08RAM\uff09\u7684\u6392\u67e5\u4e0e\u4fee\u590d", "keywords": "AI\uff0c\u672c\u5730\u6a21\u578b\uff0cllama.cpp\uff0c\u5de5\u7a0b\u5b9e\u8df5\uff0c\u6545\u969c\u6392\u67e5", "mainEntityOfPage": "https://wsn-star.github.io/posts/llamacpp%E6%98%BE%E5%AD%98%E4%B8%8E%E5%86%85%E5%AD%98%E6%8E%92%E6%9F%A5/"}</script><link rel="stylesheet" href="/assets/css/xianxia.css">
+<link rel="stylesheet" href="/assets/css/blog.css">
+<script>document.documentElement.dataset.theme = localStorage.getItem('xianxia-theme') || 'light';
+window.BLOG_ROOT = "";</script>
+</head>
+<body class="xianxia">
+<svg class="deco-svg" aria-hidden="true"><defs>
+  <symbol id="cloud-symbol" viewBox="0 0 48 16">
+    <path d="M24 2c-3.2 0-5.8 2-6.9 4.8C13.9 6.2 11 8.4 11 11.2 11 14 13.4 16 16.4 16h15.2c3 0 5.4-2 5.4-4.8 0-2.8-2.9-5-6.1-5.2C29.8 3.4 27.2 2 24 2z" fill="currentColor" opacity=".55"/>
+    <circle cx="38" cy="6" r="4.5" fill="currentColor" opacity=".3"/>
+    <circle cx="8" cy="10" r="3" fill="currentColor" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <nav class="nav-bar" aria-label="主导航">
+    <a class="brand" href="/">青云志</a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="site-menu" aria-label="打开菜单">☰</button>
+    <ul class="site-menu" id="site-menu">
+      <li><a href="/">首页</a></li>
+      <li><a href="/archives/">归档</a></li>
+      <li><a href="/tags/">标签</a></li>
+<li><a href="/关于/">关于</a></li>      <li><a href="/rss.xml">订阅</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button id="search-open" class="icon-btn" aria-label="搜索" aria-haspopup="dialog">🔍</button>
+      <button id="theme-toggle" class="icon-btn" aria-label="切换明暗主题" title="切换明暗">🌙</button>
+    </div>
+  </nav>
+</header>
+<main id="main" class="container">
+<article class="post">
+  <header class="post-head">
+    <p class="post-route"><a href="/">首页</a> › <a href="/tags/">标签</a> › <a href="/archives/">归档</a></p>
+    <h1 class="post-title">llama.cpp 显存够用却大量占用内存（RAM）的排查与修复</h1>
+    <div class="post-meta">
+      <time datetime="2026-09-19">2026年09月19日</time>
+      <span>约 3 分钟</span>
+<span>无名散修</span>    </div>
+    <ul class="tag-list" aria-label="标签">
+<li><a class="tag" href="/tags/ai/">AI</a></li><li><a class="tag" href="/tags/本地模型/">本地模型</a></li><li><a class="tag" href="/tags/llamacpp/">llama.cpp</a></li><li><a class="tag" href="/tags/工程实践/">工程实践</a></li><li><a class="tag" href="/tags/故障排查/">故障排查</a></li>    </ul>
+  </header>
+  <div class="post-layout">
+    <div class="post-body prose">
+      <h2 id="一问题现象">一、问题现象</h2>
+<p>在 8GB 显存的机器上跑本地大模型，一个常见困惑是：<strong>显存明明显示够用，内存（RAM）却依然被大量占用</strong>。模型文件只有几个 GB，跑起来却"不止那几个 GB"，系统内存被吃满，Windows 开始疯狂换页，整机变卡。</p>
+<h2 id="二根因模型文件-运行时占用">二、根因：模型文件 ≠ 运行时占用</h2>
+<p>一个 4.8GB 的 GGUF 模型，运行时占用的资源远不止 4.8GB：</p>
+<ol>
+<li><strong>模型权重</strong>本身（约 4.8GB，全部或部分驻留显存）</li>
+<li><strong>KV Cache（上下文缓存）</strong>——llama.cpp 启动时按 <code>-c</code>（上下文窗口大小）<strong>预先分配</strong>，用来记忆对话/续写上下文</li>
+<li><strong>运行时开销</strong>——分词器、采样器、系统库等</li>
+</ol>
+<p>关键在第二项：KV Cache 的大小与上下文窗口成正比。<code>-c 4096</code> 与 <code>-c 32768</code> 的缓存差一个量级——上下文设得越大（比如 32k / 64k），缓存越容易额外吃掉 <strong>2GB–4GB</strong> 显存。</p>
+<h3 id="8gb-显存上的饱和算式">8GB 显存上的"饱和算式"</h3>
+<p>以本机 RTX 5060 8GB 为例：</p>
+<div class="codehilite"><pre><span></span><code>4.8GB（模型权重） + 3GB（KV Cache） = 7.8GB ≈ 8GB 显存打满
+</code></pre></div>
+
+<p>一旦打满，Windows 就会把溢出的部分换到系统内存——表现就是"显存恰好打满、内存却大量占用"，两者同时告急。</p>
+<h2 id="三三个常见成因">三、三个常见成因</h2>
+<p>llama.cpp 显存够用却依然大量占用 RAM，通常来自以下三条，按排查顺序列出：</p>
+<ol>
+<li><strong>未开启 GPU 硬件加速编译</strong>：llama.cpp 二进制没带 CUDA 支持时，<code>-ngl</code> 形同虚设，所有层都在 CPU 上跑，权重全量留在内存</li>
+<li><strong>未正确设置把全部层加载到显存</strong>：<code>-ngl</code> 层数设得过小（如 <code>-ngl 0</code> 纯 CPU），部分层驻留内存</li>
+<li><strong>操作系统 mmap 机制</strong>：默认 mmap 把模型文件映射到内存，文件页缓存会吃 RAM（<code>--no-mmap</code> 可关闭）</li>
+</ol>
+<h2 id="四修复先把上下文窗口钳到安全基线">四、修复：先把上下文窗口钳到安全基线</h2>
+<p><strong>第一步（最关键）</strong>，把上下文窗口钳到安全值：</p>
+<div class="codehilite"><pre><span></span><code>llama-cli<span class="w"> </span>-m<span class="w"> </span>&lt;model&gt;.gguf<span class="w"> </span>-c<span class="w"> </span><span class="m">4096</span><span class="w">   </span><span class="c1"># 或 -c 8192</span>
+</code></pre></div>
+
+<p><code>-c 2048</code> 同样安全（本仓库流水线默认即 2048，远低于 32k 阈值，KV Cache 规模可控）。</p>
+<p><strong>第二步</strong>，逐个变量排查。在命令末尾追加：</p>
+<div class="codehilite"><pre><span></span><code>llama-cli<span class="w"> </span>-m<span class="w"> </span>&lt;model&gt;.gguf<span class="w"> </span>--no-mmap<span class="w"> </span>-c<span class="w"> </span><span class="m">4096</span><span class="w"> </span>-ngl<span class="w"> </span>-1
+</code></pre></div>
+
+<ul>
+<li><code>--no-mmap</code>：关闭 mmap，排除"文件被映射进内存"这一变量</li>
+<li><code>-c 4096</code>：钳住 KV Cache 规模</li>
+<li><code>-ngl -1</code>：把全部层 offload 到 GPU（前提：二进制带 CUDA 支持，且显存放得下）</li>
+</ul>
+<p><strong>第三步</strong>，若内存占用仍然很高，把 llama.cpp 启动时<strong>前 20 行终端输出</strong>贴出来排查——带 <code>ggml_cuda</code> 的行会直接说明问题出在哪：是否识别到 GPU、实际 offload 了多少层、KV Cache 分配了多大。</p>
+<h2 id="五与本仓库流水线的对照">五、与本仓库流水线的对照</h2>
+<p>本仓库每日导读流水线（<code>scripts/daily_ai_agent.py</code>）已踩过这条线，参数现状：</p>
+<table>
+<thead>
+<tr>
+<th>后端</th>
+<th>上下文</th>
+<th>GPU 参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>llama-cli（7B）</td>
+<td><code>-c 2048</code></td>
+<td><code>-ngl 0</code> 纯 CPU</td>
+<td>7B 小模型 CPU 即可满足</td>
+</tr>
+<tr>
+<td>llama-cli（9B）</td>
+<td><code>-c 2048</code></td>
+<td><code>-ngl 12</code></td>
+<td>8GB 显存下 9B 的层数上限（<code>-ngl 14</code> 临界、<code>-ngl 16</code> OOM）</td>
+</tr>
+<tr>
+<td>Ollama（9B）</td>
+<td>Ollama 自动</td>
+<td>自动管理</td>
+<td>GPU 利用率 ~94%，接近全量进显存</td>
+</tr>
+</tbody>
+</table>
+<p>对照上面的排查清单：</p>
+<ul>
+<li><strong>上下文已达标</strong>：全部入口统一 <code>-c 2048</code>，KV Cache 规模远低于 32k 阈值，无需再加 <code>-c 4096</code> 钳制</li>
+<li><strong>9B 无法 <code>-ngl -1</code></strong>：8GB 显存放不下 9B 全量层，实测上限 <code>-ngl 12</code>；这正是当初引入 Ollama 后端的直接原因</li>
+<li><strong>Ollama 是终局方案</strong>：内部自动管理 KV Cache 与层 offload，GPU 利用率 94%（llama-cli 仅 ~19%），从源头避开 mmap 与 <code>-ngl</code> 手动调优问题</li>
+</ul>
+<h2 id="六小结">六、小结</h2>
+<p>排查顺序一句话：<strong>先钳上下文（<code>-c 4096</code> / <code>-c 8192</code>），再关 mmap（<code>--no-mmap</code>），最后看 <code>ggml_cuda</code> 头几行确认 GPU offload 是否生效</strong>。模型文件大小只是起点——KV Cache 规模与层 offload 策略，才是 8GB 显存机器上内存/显存账本的真正变量。</p>
+    </div>
+    <aside class="toc" aria-label="章节目录">
+      <p class="toc-title">卷目</p>
+      <ol>
+        <li class="toc-l2"><a href="#一问题现象">一、问题现象</a></li>
+        <li class="toc-l2"><a href="#二根因模型文件-运行时占用">二、根因：模型文件 ≠ 运行时占用</a></li>
+        <li class="toc-l3"><a href="#8gb-显存上的饱和算式">8GB 显存上的&#34;饱和算式&#34;</a></li>
+        <li class="toc-l2"><a href="#三三个常见成因">三、三个常见成因</a></li>
+        <li class="toc-l2"><a href="#四修复先把上下文窗口钳到安全基线">四、修复：先把上下文窗口钳到安全基线</a></li>
+        <li class="toc-l2"><a href="#五与本仓库流水线的对照">五、与本仓库流水线的对照</a></li>
+        <li class="toc-l2"><a href="#六小结">六、小结</a></li>
+      </ol>
+    </aside>
+  </div>
+  <section class="related" aria-label="相关文章">
+    <h2>他山之石 · 相关文章</h2>
+    <div class="related-list">
+      <a class="related-card" href="/posts/五模型每日ai导读agent的设计比较与使用指南/">
+        <span class="related-date">2026-09-19</span>
+        <span class="related-title">五模型每日 AI 导读 Agent 的设计、比较与使用指南</span>
+      </a>
+      <a class="related-card" href="/posts/每日ai导读-5/">
+        <span class="related-date">2026-09-18</span>
+        <span class="related-title">每日 AI 导读:2026-09-18</span>
+      </a>
+      <a class="related-card" href="/posts/每日ai导读-4/">
+        <span class="related-date">2026-09-18</span>
+        <span class="related-title">每日 AI 导读:2026-09-18</span>
+      </a>
+    </div>
+  </section>
+  <nav class="post-nav" aria-label="上一篇/下一篇">
+<a class="post-nav-prev" href="/posts/五模型每日ai导读agent的设计比较与使用指南/">← 五模型每日 AI 导读 Agent 的设计、比较与使用指南</a><a class="post-nav-next" href="/posts/每日ai导读-5/">每日 AI 导读:2026-09-18 →</a>  </nav>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="cloud-divider" aria-hidden="true">
+    <svg viewBox="0 0 480 18" role="presentation"><use href="#cloud-symbol" x="0"/><use href="#cloud-symbol" x="144"/><use href="#cloud-symbol" x="288"/><use href="#cloud-symbol" x="432" transform="scale(-1,1) translate(-480,0)"/></svg>
+  </div>
+  <p class="footer-line">剑气纵横三万里，一剑光寒十九州。</p>
+  <p class="footer-meta">© 2026 无名散修 · 由 post-generator 铸造 · <a href="/atom.xml">Atom</a> / <a href="/rss.xml">RSS</a></p>
+</footer>
+<div id="search-panel" class="search-panel" hidden aria-hidden="true">
+  <div class="search-box" role="dialog" aria-modal="true" aria-labelledby="search-title">
+    <h2 id="search-title" class="visually-hidden">站内搜索</h2>
+    <div class="search-field">
+      <label class="visually-hidden" for="search-input">搜索关键词</label>
+      <input id="search-input" type="search" placeholder="搜剑诀、丹方、见闻…" autocomplete="off">
+      <button id="search-close" class="icon-btn" aria-label="关闭搜索">✕</button>
+    </div>
+    <p id="search-status" class="search-status" role="status"></p>
+    <ul id="search-results" class="search-results"></ul>
+  </div>
+</div>
+<script src="/assets/search-index.js" defer></script>
+<script src="/assets/js/theme.js" defer></script>
+<script src="/assets/js/search.js" defer></script>
+<script src="/assets/js/main.js" defer></script>
+</body>
+</html>

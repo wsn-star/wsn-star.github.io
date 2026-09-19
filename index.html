@@ -42,7 +42,7 @@ window.BLOG_ROOT = "";</script>
 <section class="hero">
   <h1 class="hero-title">青云志</h1>
   <p class="hero-subtitle">一剑霜寒十四州</p>
-  <div class="hero-meta">共 12 篇 · 22 个标签</div>
+  <div class="hero-meta">共 13 篇 · 23 个标签</div>
 </section>
 <section class="post-list" aria-label="文章列表">
 <article class="post-card">
@@ -54,6 +54,17 @@ window.BLOG_ROOT = "";</script>
       <span class="card-summary">在 8GB 显存的本机上，用 5 个本地小模型 + 双推理后端（llama.cpp / Ollama）搭建每日 AI 导读流水线的完整记录：设计原理、实测对比、使用指南与踩坑经验。</span>
       <span class="card-tags">
 <span class="tag">AI</span><span class="tag">每日导读</span><span class="tag">Agent</span><span class="tag">本地模型</span><span class="tag">Ollama</span><span class="tag">llama.cpp</span><span class="tag">工程实践</span>      </span>
+    </span>
+  </a>
+</article><article class="post-card">
+  <a class="card-link" href="/posts/llamacpp显存与内存排查/">
+    <span class="card-seal" aria-hidden="true"><b>09</b><span>2026</span></span>
+    <span class="card-body">
+      <h2 class="card-title">llama.cpp 显存够用却大量占用内存（RAM）的排查与修复</h2>
+      <span class="card-meta"><time datetime="2026-09-19">2026年09月19日</time> · 约 3 分钟</span>
+      <span class="card-summary">8GB 显存机器上跑本地模型时，&#34;显存看似够用、内存却被大量占用&#34;是常见困惑。本文梳理三个根因——KV Cache 随上下文窗口预分配、未开启 GPU 硬件加速、mmap 把模型文件映射进内存——并给出逐步排查与修复参数。</span>
+      <span class="card-tags">
+<span class="tag">AI</span><span class="tag">本地模型</span><span class="tag">llama.cpp</span><span class="tag">工程实践</span><span class="tag">故障排查</span>      </span>
     </span>
   </a>
 </article><article class="post-card">
@@ -142,17 +153,6 @@ window.BLOG_ROOT = "";</script>
       <span class="card-summary">从补全到自治编码，2025—2026 年 AI 编程助手完成了从「帮你打字」到「替你开车」的跃迁。一文拆解 Claude Code、Cursor、Composer 的架构演进、基准真相与落地要点。</span>
       <span class="card-tags">
 <span class="tag">AI</span><span class="tag">Agent</span><span class="tag">编程</span><span class="tag">SWE-bench</span>      </span>
-    </span>
-  </a>
-</article><article class="post-card">
-  <a class="card-link" href="/posts/ai-agent框架综述/">
-    <span class="card-seal" aria-hidden="true"><b>09</b><span>2026</span></span>
-    <span class="card-body">
-      <h2 class="card-title">AI Agent 框架全景综述（2026）</h2>
-      <span class="card-meta"><time datetime="2026-09-18">2026年09月18日</time> · 约 4 分钟</span>
-      <span class="card-summary">LangGraph、CrewAI、OpenAI Agents SDK、AutoGen/AG2、Claude Agent SDK……2026 年 agent 框架已从「卷概念」走向「卷工程」。逐家拆解,并给一张真正可用的选型决策表。</span>
-      <span class="card-tags">
-<span class="tag">AI</span><span class="tag">Agent</span><span class="tag">框架</span><span class="tag">LangGraph</span><span class="tag">CrewAI</span>      </span>
     </span>
   </a>
 </article></section>
