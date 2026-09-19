@@ -6,8 +6,15 @@
   <link>https://wsn-star.github.io</link>
   <description>一介散修的问道笔记：剑诀、丹方与山海见闻</description>
   <language>zh-CN</language>
-  <lastBuildDate>Fri, 18 Sep 2026 00:00:00 -0400</lastBuildDate>
+  <lastBuildDate>Sat, 19 Sep 2026 00:00:00 -0400</lastBuildDate>
   <atom:link href="https://wsn-star.github.io/rss.xml" rel="self" type="application/rss+xml"/>
+  <item>
+    <title>五模型每日 AI 导读 Agent 的设计、比较与使用指南</title>
+    <link>https://wsn-star.github.io/posts/%E4%BA%94%E6%A8%A1%E5%9E%8B%E6%AF%8F%E6%97%A5ai%E5%AF%BC%E8%AF%BBagent%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%AF%94%E8%BE%83%E4%B8%8E%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/</link>
+    <guid isPermaLink="true">https://wsn-star.github.io/posts/%E4%BA%94%E6%A8%A1%E5%9E%8B%E6%AF%8F%E6%97%A5ai%E5%AF%BC%E8%AF%BBagent%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%AF%94%E8%BE%83%E4%B8%8E%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/</guid>
+    <pubDate>Sat, 19 Sep 2026 00:00:00 -0400</pubDate>
+    <description><![CDATA[在 8GB 显存的本机上，用 5 个本地小模型 + 双推理后端（llama.cpp / Ollama）搭建每日 AI 导读流水线的完整记录：设计原理、实测对比、使用指南与踩坑经验。]]></description>
+<category>AI</category><category>每日导读</category><category>Agent</category><category>本地模型</category><category>Ollama</category><category>llama.cpp</category><category>工程实践</category>  </item>
   <item>
     <title>每日 AI 导读:2026-09-18</title>
     <link>https://wsn-star.github.io/posts/%E6%AF%8F%E6%97%A5ai%E5%AF%BC%E8%AF%BB-5/</link>

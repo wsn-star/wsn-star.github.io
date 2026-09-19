@@ -4,8 +4,319 @@
   <subtitle>一介散修的问道笔记：剑诀、丹方与山海见闻</subtitle>
   <link href="https://wsn-star.github.io"/>
   <link href="https://wsn-star.github.io/atom.xml" rel="self" type="application/atom+xml"/>
-  <updated>2026-09-18T00:00:00-04:00</updated>
+  <updated>2026-09-19T00:00:00-04:00</updated>
   <id>https://wsn-star.github.io/</id>
+  <entry>
+    <title>五模型每日 AI 导读 Agent 的设计、比较与使用指南</title>
+    <link href="https://wsn-star.github.io/posts/%E4%BA%94%E6%A8%A1%E5%9E%8B%E6%AF%8F%E6%97%A5ai%E5%AF%BC%E8%AF%BBagent%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%AF%94%E8%BE%83%E4%B8%8E%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/"/>
+    <id>https://wsn-star.github.io/posts/%E4%BA%94%E6%A8%A1%E5%9E%8B%E6%AF%8F%E6%97%A5ai%E5%AF%BC%E8%AF%BBagent%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%AF%94%E8%BE%83%E4%B8%8E%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/</id>
+    <published>2026-09-19T00:00:00-04:00</published>
+    <updated>2026-09-19T00:00:00-04:00</updated>
+<category term="AI"/><category term="每日导读"/><category term="Agent"/><category term="本地模型"/><category term="Ollama"/><category term="llama.cpp"/><category term="工程实践"/>    <summary>在 8GB 显存的本机上，用 5 个本地小模型 + 双推理后端（llama.cpp / Ollama）搭建每日 AI 导读流水线的完整记录：设计原理、实测对比、使用指南与踩坑经验。</summary>
+    <content type="html">&lt;h2 id=&#34;一背景与目标&#34;&gt;一、背景与目标&lt;/h2&gt;
+&lt;p&gt;「青云志」技术博客需要每日产出一篇 AI 导读。纯手工写成本高、易断更；直接用大模型生成又面临三个核心问题：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;事实不可信&lt;/strong&gt;——模型会编造新闻&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;链接不可信&lt;/strong&gt;——模型会编造 URL&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;长度失控&lt;/strong&gt;——小模型写不满、漏条、格式跑偏&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;为此我们搭建了一条&lt;strong&gt;素材注入 + 本地模型生成 + 确定性兜底 + 质量校验&lt;/strong&gt;的流水线，并逐步扩展到 &lt;strong&gt;5 个本地模型&lt;/strong&gt;同时服务，用不同作者名区分产出，方便直接对比各模型能力。&lt;/p&gt;
+&lt;p&gt;本机硬件约束：RTX 5060 8GB 显存、15.7GB 内存——9B 模型无法全量 offload 到 llama.cpp，但 Ollama 能做到接近全量 GPU。这一差异直接决定了双后端的设计。&lt;/p&gt;
+&lt;h2 id=&#34;二架构总览&#34;&gt;二、架构总览&lt;/h2&gt;
+&lt;div class=&#34;codehilite&#34;&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;素材层        scripts/news_input.json（当天新闻 + 最佳博文/视频，web_search 注入）
+               ↓ 结构校验（畸形即退出）
+生成层        本地模型 × 5（两个后端：llama-cli / Ollama）
+               ↓ 模型输出
+兜底层        确定性修复（补漏新闻 / 保真推荐小节 / 归一收尾与标题）
+               ↓
+校验层        硬校验 × 5（不过带修正提示重试，最多 3 次）
+               ↓
+产出层        content/posts/&amp;lt;日期&amp;gt;-每日AI导读[-N].md → build → deploy → GitHub Pages
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;五个入口脚本共用同一份核心逻辑（&lt;code&gt;scripts/daily_ai_agent.py&lt;/code&gt;），各自只是注入不同参数：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;入口&lt;/th&gt;
+&lt;th&gt;模型&lt;/th&gt;
+&lt;th&gt;后端&lt;/th&gt;
+&lt;th&gt;作者名&lt;/th&gt;
+&lt;th&gt;文件名后缀&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;daily_ai_agent.py&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;qwen2.5-coder-7b&lt;/td&gt;
+&lt;td&gt;llama-cli&lt;/td&gt;
+&lt;td&gt;无名散修&lt;/td&gt;
+&lt;td&gt;无&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;daily_ai_agent2.py&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Qwen3.5-9B-Revised&lt;/td&gt;
+&lt;td&gt;llama-cli&lt;/td&gt;
+&lt;td&gt;青云·九章&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;-2&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;daily_ai_agent3.py&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Qwen3.5-9B-Claude-Opus-Distilled&lt;/td&gt;
+&lt;td&gt;llama-cli&lt;/td&gt;
+&lt;td&gt;三剑客&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;-3&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;daily_ai_agent4.py&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;qwen2.5:7b（Ollama）&lt;/td&gt;
+&lt;td&gt;Ollama&lt;/td&gt;
+&lt;td&gt;Ollama&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;-4&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;daily_ai_agent5.py&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;qwen-distill-q4:latest（Ollama）&lt;/td&gt;
+&lt;td&gt;Ollama&lt;/td&gt;
+&lt;td&gt;Oqwen&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;-5&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;三核心设计原理&#34;&gt;三、核心设计原理&lt;/h2&gt;
+&lt;h3 id=&#34;31-素材注入模型只写作&#34;&gt;3.1 素材注入，模型只写作&lt;/h3&gt;
+&lt;p&gt;脚本&lt;strong&gt;不联网、不负责提供事实&lt;/strong&gt;。当天新闻、最佳博文、最佳视频由调用方用 web_search 抓取后写入 &lt;code&gt;news_input.json&lt;/code&gt;，模型只负责把素材润色成文章。这是&#34;事实可信&#34;的根本保证——模型没有机会编造。&lt;/p&gt;
+&lt;h3 id=&#34;32-链接绝不信任模型&#34;&gt;3.2 链接绝不信任模型&lt;/h3&gt;
+&lt;p&gt;推荐小节（今日AI博文推荐 / 今日AI视频推荐）的标题与 URL &lt;strong&gt;一律以注入素材为准&lt;/strong&gt;，由脚本 &lt;code&gt;best_section()&lt;/code&gt; 精确保真构造。模型输出里的任何链接都不采信，因为小模型编造 URL 的风险不可接受。&lt;/p&gt;
+&lt;h3 id=&#34;33-确定性兜底质量下限不靠模型自觉&#34;&gt;3.3 确定性兜底（质量下限不靠模型自觉）&lt;/h3&gt;
+&lt;p&gt;小模型能力有限，脚本用四个确定性函数保证产出结构：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;complete_missing_news()&lt;/code&gt;：模型漏写的新闻以「其他要闻」小节补进正文——&lt;strong&gt;10 条新闻一条不漏&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;enforce_best_sections()&lt;/code&gt;：推荐小节保真覆写，素材为空则跳过&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;normalize_summary_title()&lt;/code&gt;：收尾小节标题归一（裸文本 &lt;code&gt;今日小结&lt;/code&gt;、&lt;code&gt;今日小结：正文&lt;/code&gt; 同行等变体统一为 &lt;code&gt;## 今日小结&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;normalize_title()&lt;/code&gt;：front matter 标题冒号格式归一（全角 &lt;code&gt;：&lt;/code&gt;/空格 → 半角无空格）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;34-质量校验闭环&#34;&gt;3.4 质量校验闭环&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;硬校验&lt;/strong&gt;（不过 → 带修正提示重试，最多 3 次）：front matter 完整、date 当天、小节标题不重复、新闻逐条覆盖（独有专名判定）、推荐链接齐全。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;软校验&lt;/strong&gt;（记日志不阻断）：字数过短、缺收尾小节。&lt;/p&gt;
+&lt;p&gt;关键词判定算法：优先英数专名（模型名/版本号），专名不足补中文片段，过滤概念词与高频中文词，无法判定的显式告警。&lt;/p&gt;
+&lt;h3 id=&#34;35-单后端约束&#34;&gt;3.5 单后端约束&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;--backend&lt;/code&gt; 二选一（&lt;code&gt;llama&lt;/code&gt; / &lt;code&gt;ollama&lt;/code&gt;），&lt;strong&gt;一次运行只允许一种后端&lt;/strong&gt;。llama-cli 与 Ollama 的模型、资源管理方式不同，并行只会互相干扰。&lt;/p&gt;
+&lt;h3 id=&#34;36-双后端的本质差异续写-vs-对话&#34;&gt;3.6 双后端的本质差异：续写 vs 对话&lt;/h3&gt;
+&lt;p&gt;这是踩坑换来的关键认知：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;后端&lt;/th&gt;
+&lt;th&gt;调用方式&lt;/th&gt;
+&lt;th&gt;模型行为&lt;/th&gt;
+&lt;th&gt;需要的技巧&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;llama-cli&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;-p &amp;lt;prompt&amp;gt;&lt;/code&gt; 纯续写&lt;/td&gt;
+&lt;td&gt;把 prompt 当&#34;接着写&#34;的上下文 → 直接产出 Markdown&lt;/td&gt;
+&lt;td&gt;无需额外处理&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Ollama /api/chat&lt;/td&gt;
+&lt;td&gt;对话消息&lt;/td&gt;
+&lt;td&gt;倾向&#34;回应对话&#34; → 把指令当&#34;待分析输入&#34;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;system 消息声明&#34;直接输出文章&#34;&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;实测：llama3 基座模型无论走 chat 还是 generate，都会把写作指令当输入分析（&#34;It seems like you&#39;re using Markdown…&#34;），&lt;strong&gt;无法胜任格式任务&lt;/strong&gt;；qwen2.5:7b 指令版 + system 消息则稳定遵循。选型时&#34;指令/续写调优模型&#34;远比&#34;聊天基座模型&#34;适合格式生成。&lt;/p&gt;
+&lt;h3 id=&#34;37-gpu-策略llama-cli-与-ollama-的显眼差距&#34;&gt;3.7 GPU 策略：llama-cli 与 Ollama 的显眼差距&lt;/h3&gt;
+&lt;p&gt;本机 8GB 显存下实测：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;指标&lt;/th&gt;
+&lt;th&gt;llama-cli（9B, &lt;code&gt;-ngl 12&lt;/code&gt;）&lt;/th&gt;
+&lt;th&gt;Ollama（9B 自动管理）&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;显存占用&lt;/td&gt;
+&lt;td&gt;7224 MiB&lt;/td&gt;
+&lt;td&gt;7020 MiB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;GPU 利用率峰值&lt;/td&gt;
+&lt;td&gt;~19%&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;94%&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;生成速度&lt;/td&gt;
+&lt;td&gt;~68s（完整导读）&lt;/td&gt;
+&lt;td&gt;~20s / 43 tok/s&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;结论&lt;/strong&gt;：llama-cli 的 &lt;code&gt;-ngl 12&lt;/code&gt; 是它自己的层数上限（&lt;code&gt;-ngl 14&lt;/code&gt; 临界、&lt;code&gt;-ngl 16&lt;/code&gt; OOM），Ollama 内部做了更聪明的显存管理，能把 9B 模型几乎全量塞进 GPU。&lt;strong&gt;新模型优先走 Ollama 后端&lt;/strong&gt;，无需手动 &lt;code&gt;-ngl&lt;/code&gt; 调优。&lt;/p&gt;
+&lt;h3 id=&#34;38-风格契约&#34;&gt;3.8 风格契约&lt;/h3&gt;
+&lt;p&gt;站点外观保持仙侠风（品牌文案、配色），&lt;strong&gt;博文标题与正文一律正式技术风&lt;/strong&gt;——导读标题如 &lt;code&gt;每日 AI 导读:2026-09-18&lt;/code&gt;，禁止文学化/武侠化表达。&lt;/p&gt;
+&lt;h2 id=&#34;四五模型逐一详解&#34;&gt;四、五模型逐一详解&lt;/h2&gt;
+&lt;h3 id=&#34;41-qwen25-coder-7b无名散修流水线元老&#34;&gt;4.1 qwen2.5-coder-7b（无名散修）——流水线元老&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;llama-cli 纯 CPU（&lt;code&gt;-ngl 0&lt;/code&gt;），约 50-90s/篇&lt;/li&gt;
+&lt;li&gt;首个验证可用的模型，奠定了&#34;续写式 prompt 能稳定出 front matter&#34;的基线&lt;/li&gt;
+&lt;li&gt;特点：逐条罗列新闻，主题小节相对朴素&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;42-qwen35-9b-revised青云九章首个-9b&#34;&gt;4.2 Qwen3.5-9B-Revised（青云·九章）——首个 9B&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;llama-cli，&lt;code&gt;-rea off -ngl 12&lt;/code&gt;，约 68-100s/篇&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;关键发现&lt;/strong&gt;：Qwen3.5-9B 系列默认输出 &lt;code&gt;[Start thinking]&lt;/code&gt; 思考块挤占正文 → 必须 &lt;code&gt;-rea off&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;特点：主题归类别更清晰，能归纳&#34;综合小节&#34;，产出接近综述而非要闻列表&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;43-qwen35-9b-claude-opus-distilled三剑客推理蒸馏版&#34;&gt;4.3 Qwen3.5-9B-Claude-Opus-Distilled（三剑客）——推理蒸馏版&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;llama-cli，&lt;code&gt;-rea off -ngl 12&lt;/code&gt;，约 2min/篇&lt;/li&gt;
+&lt;li&gt;名字含义：结合 Qwen + Claude + Opus 蒸馏优点&lt;/li&gt;
+&lt;li&gt;特点：内容密度高，能把多条模型新闻整合进「能力演进」小节并注明 SOTA，表达最紧凑&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;44-qwen257b-via-ollamaollama首个-ollama-后端&#34;&gt;4.4 qwen2.5:7b via Ollama（Ollama）——首个 Ollama 后端&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Ollama /api/chat + system 消息，约 17-25s/篇，GPU 利用率 ~94%&lt;/li&gt;
+&lt;li&gt;验证了&#34;Ollama 全 GPU + system 消息&#34;这套组合的可行性&lt;/li&gt;
+&lt;li&gt;特点：速度快一个量级，格式遵循稳定&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;45-qwen-distill-q4latest-via-ollamaoqwen9b-蒸馏最快&#34;&gt;4.5 qwen-distill-q4:latest via Ollama（Oqwen）——9B 蒸馏最快&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Ollama，约 20s/篇，一次通过硬校验&lt;/li&gt;
+&lt;li&gt;9B 蒸馏版在 Ollama 全 GPU 下兼顾质量与速度&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;五实测性能对比&#34;&gt;五、实测性能对比&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;模型&lt;/th&gt;
+&lt;th&gt;后端&lt;/th&gt;
+&lt;th&gt;作者&lt;/th&gt;
+&lt;th&gt;完整导读用时&lt;/th&gt;
+&lt;th&gt;GPU 利用率&lt;/th&gt;
+&lt;th&gt;硬校验&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;qwen2.5-coder-7b&lt;/td&gt;
+&lt;td&gt;llama-cli&lt;/td&gt;
+&lt;td&gt;无名散修&lt;/td&gt;
+&lt;td&gt;~50-90s&lt;/td&gt;
+&lt;td&gt;~5%&lt;/td&gt;
+&lt;td&gt;通过&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Qwen3.5-9B-Revised&lt;/td&gt;
+&lt;td&gt;llama-cli&lt;/td&gt;
+&lt;td&gt;青云·九章&lt;/td&gt;
+&lt;td&gt;~68-100s&lt;/td&gt;
+&lt;td&gt;~19%&lt;/td&gt;
+&lt;td&gt;通过&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Claude-Opus 蒸馏&lt;/td&gt;
+&lt;td&gt;llama-cli&lt;/td&gt;
+&lt;td&gt;三剑客&lt;/td&gt;
+&lt;td&gt;~2min&lt;/td&gt;
+&lt;td&gt;~19%&lt;/td&gt;
+&lt;td&gt;通过&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;qwen2.5:7b&lt;/td&gt;
+&lt;td&gt;Ollama&lt;/td&gt;
+&lt;td&gt;Ollama&lt;/td&gt;
+&lt;td&gt;~17-25s&lt;/td&gt;
+&lt;td&gt;~94%&lt;/td&gt;
+&lt;td&gt;通过&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;qwen-distill-q4&lt;/td&gt;
+&lt;td&gt;Ollama&lt;/td&gt;
+&lt;td&gt;Oqwen&lt;/td&gt;
+&lt;td&gt;~20s&lt;/td&gt;
+&lt;td&gt;~94%&lt;/td&gt;
+&lt;td&gt;通过&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;结构契约全部统一：&lt;code&gt;front matter → 主题小节 → [其他要闻·如有] → 今日AI博文推荐 → 今日AI视频推荐 → ## 今日小结&lt;/code&gt;。&lt;/p&gt;
+&lt;h2 id=&#34;六使用指南&#34;&gt;六、使用指南&lt;/h2&gt;
+&lt;h3 id=&#34;61-前置条件&#34;&gt;6.1 前置条件&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Python 3.12（conda env &lt;code&gt;ai-agent&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;llama-cli：&lt;code&gt;C:\llama\llama-cli.exe&lt;/code&gt; + GGUF 模型&lt;/li&gt;
+&lt;li&gt;Ollama：服务运行中（&lt;code&gt;ollama serve&lt;/code&gt;），已 pull 对应模型&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;62-生成命令&#34;&gt;6.2 生成命令&lt;/h3&gt;
+&lt;div class=&#34;codehilite&#34;&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class=&#34;c1&#34;&gt;# 素材准备：web_search 抓当天新闻/博文/视频 → 写入 scripts/news_input.json&lt;/span&gt;
+
+&lt;span class=&#34;c1&#34;&gt;# 各模型生成（可选 --draft 只预览不写文件）&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;PYTHONIOENCODING&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;utf-8&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$PY&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;scripts/daily_ai_agent.py&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;--draft&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;PYTHONIOENCODING&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;utf-8&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$PY&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;scripts/daily_ai_agent2.py&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;--draft&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;PYTHONIOENCODING&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;utf-8&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$PY&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;scripts/daily_ai_agent3.py&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;--draft&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;PYTHONIOENCODING&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;utf-8&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$PY&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;scripts/daily_ai_agent4.py&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;--draft&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;PYTHONIOENCODING&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;utf-8&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$PY&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;scripts/daily_ai_agent5.py&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;--draft&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3 id=&#34;63-发布&#34;&gt;6.3 发布&lt;/h3&gt;
+&lt;div class=&#34;codehilite&#34;&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;bash&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;deploy.sh&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&#34;内容: 每日AI导读 &amp;lt;日期&amp;gt;&#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3 id=&#34;64-故障排查速查&#34;&gt;6.4 故障排查速查&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;现象&lt;/th&gt;
+&lt;th&gt;原因&lt;/th&gt;
+&lt;th&gt;处理&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;缺 front matter（3 稿失败）&lt;/td&gt;
+&lt;td&gt;推理模型输出思考块&lt;/td&gt;
+&lt;td&gt;llama-cli 加 &lt;code&gt;-rea off&lt;/code&gt;；Ollama 用 system 消息&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;模型把指令当输入回应&lt;/td&gt;
+&lt;td&gt;聊天基座模型&lt;/td&gt;
+&lt;td&gt;换指令版（qwen2.5:7b），加 system 消息&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;--llama-args=-rea,off&lt;/code&gt; 报错&lt;/td&gt;
+&lt;td&gt;argparse 把 &lt;code&gt;-rea&lt;/code&gt; 当选项&lt;/td&gt;
+&lt;td&gt;用等号形式传值&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;9B OOM&lt;/td&gt;
+&lt;td&gt;8GB 显存限制&lt;/td&gt;
+&lt;td&gt;llama-cli &lt;code&gt;-ngl 12&lt;/code&gt;；或改用 Ollama 后端&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Ollama 连接拒绝&lt;/td&gt;
+&lt;td&gt;服务未运行&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;ollama serve&lt;/code&gt; 并保持窗口&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;七选型建议&#34;&gt;七、选型建议&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;追求速度&lt;/strong&gt;：Ollama 后端（agent4/5），20 秒出稿&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;追求质量&lt;/strong&gt;：Claude-Opus 蒸馏（agent3）内容最紧凑；Qwen3.5-9B-Revised（agent2）综述感强&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;稳定性优先&lt;/strong&gt;：qwen2.5:7b（agent4）格式遵循最稳&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;新模型优先走 Ollama&lt;/strong&gt;：自动全 GPU，免去 &lt;code&gt;-ngl&lt;/code&gt; 调优&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;避免&lt;/strong&gt;：聊天基座模型（如 llama3）做格式生成任务&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;八结语&#34;&gt;八、结语&lt;/h2&gt;
+&lt;p&gt;这套流水线的核心经验可以一句话概括：&lt;strong&gt;把&#34;事实&#34;与&#34;格式&#34;交给确定性代码，把&#34;表达&#34;交给模型&lt;/strong&gt;。素材注入保证事实可信，确定性兜底保证结构统一，质量校验保证不产出坏稿——模型只负责它擅长的润色。五模型并存后，每天可以一次生成五篇导读，直接对比各家能力差异，也方便逐步淘汰表现差的模型。&lt;/p&gt;
+&lt;p&gt;源码与全部文档在 &lt;code&gt;D:\prj\evox-agent\website_generator&lt;/code&gt;（&lt;code&gt;docs/&lt;/code&gt; 有详细设计说明书与使用手册）。&lt;/p&gt;</content>
+  </entry>
   <entry>
     <title>每日 AI 导读:2026-09-18</title>
     <link href="https://wsn-star.github.io/posts/%E6%AF%8F%E6%97%A5ai%E5%AF%BC%E8%AF%BB-5/"/>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://wsn-star.github.io/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
+  <url><loc>https://wsn-star.github.io/posts/%E4%BA%94%E6%A8%A1%E5%9E%8B%E6%AF%8F%E6%97%A5ai%E5%AF%BC%E8%AF%BBagent%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%AF%94%E8%BE%83%E4%B8%8E%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/</loc><lastmod>2026-09-19</lastmod><priority>0.8</priority></url>
   <url><loc>https://wsn-star.github.io/posts/%E6%AF%8F%E6%97%A5ai%E5%AF%BC%E8%AF%BB-5/</loc><lastmod>2026-09-18</lastmod><priority>0.8</priority></url>
   <url><loc>https://wsn-star.github.io/posts/%E6%AF%8F%E6%97%A5ai%E5%AF%BC%E8%AF%BB-4/</loc><lastmod>2026-09-18</lastmod><priority>0.8</priority></url>
   <url><loc>https://wsn-star.github.io/posts/%E6%AF%8F%E6%97%A5ai%E5%AF%BC%E8%AF%BB-3/</loc><lastmod>2026-09-18</lastmod><priority>0.8</priority></url>
@@ -20,11 +21,15 @@
   <url><loc>https://wsn-star.github.io/tags/crewai/</loc><priority>0.5</priority></url>
   <url><loc>https://wsn-star.github.io/tags/harness/</loc><priority>0.5</priority></url>
   <url><loc>https://wsn-star.github.io/tags/langgraph/</loc><priority>0.5</priority></url>
+  <url><loc>https://wsn-star.github.io/tags/ollama/</loc><priority>0.5</priority></url>
   <url><loc>https://wsn-star.github.io/tags/rag/</loc><priority>0.5</priority></url>
   <url><loc>https://wsn-star.github.io/tags/swe-bench/</loc><priority>0.5</priority></url>
+  <url><loc>https://wsn-star.github.io/tags/llamacpp/</loc><priority>0.5</priority></url>
   <url><loc>https://wsn-star.github.io/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/</loc><priority>0.5</priority></url>
   <url><loc>https://wsn-star.github.io/tags/%E5%B0%8F%E6%A8%A1%E5%9E%8B/</loc><priority>0.5</priority></url>
   <url><loc>https://wsn-star.github.io/tags/%E5%B7%A5%E7%A8%8B/</loc><priority>0.5</priority></url>
+  <url><loc>https://wsn-star.github.io/tags/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/</loc><priority>0.5</priority></url>
+  <url><loc>https://wsn-star.github.io/tags/%E6%9C%AC%E5%9C%B0%E6%A8%A1%E5%9E%8B/</loc><priority>0.5</priority></url>
   <url><loc>https://wsn-star.github.io/tags/%E6%A1%86%E6%9E%B6/</loc><priority>0.5</priority></url>
   <url><loc>https://wsn-star.github.io/tags/%E7%9F%A5%E8%AF%86%E5%BA%93/</loc><priority>0.5</priority></url>
   <url><loc>https://wsn-star.github.io/tags/%E7%BC%96%E7%A8%8B/</loc><priority>0.5</priority></url>

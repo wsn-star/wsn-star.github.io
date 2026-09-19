@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>五模型每日 AI 导读 Agent 的设计、比较与使用指南 · 青云志</title>
+<meta name="description" content="在 8GB 显存的本机上，用 5 个本地小模型 + 双推理后端（llama.cpp / Ollama）搭建每日 AI 导读流水线的完整记录：设计原理、实测对比、使用指南与踩坑经验。">
+<link rel="canonical" href="https://wsn-star.github.io/posts/%E4%BA%94%E6%A8%A1%E5%9E%8B%E6%AF%8F%E6%97%A5ai%E5%AF%BC%E8%AF%BBagent%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%AF%94%E8%BE%83%E4%B8%8E%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/"><meta name="generator" content="post-generator v0.1.0">
+<meta name="theme-color" content="#141c21">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "author": {"@type": "Person", "name": "\u65e0\u540d\u6563\u4fee"}, "dateModified": "2026-09-19T00:00:00-04:00", "datePublished": "2026-09-19T00:00:00-04:00", "description": "\u5728 8GB \u663e\u5b58\u7684\u672c\u673a\u4e0a\uff0c\u7528 5 \u4e2a\u672c\u5730\u5c0f\u6a21\u578b + \u53cc\u63a8\u7406\u540e\u7aef\uff08llama.cpp / Ollama\uff09\u642d\u5efa\u6bcf\u65e5 AI \u5bfc\u8bfb\u6d41\u6c34\u7ebf\u7684\u5b8c\u6574\u8bb0\u5f55\uff1a\u8bbe\u8ba1\u539f\u7406\u3001\u5b9e\u6d4b\u5bf9\u6bd4\u3001\u4f7f\u7528\u6307\u5357\u4e0e\u8e29\u5751\u7ecf\u9a8c\u3002", "headline": "\u4e94\u6a21\u578b\u6bcf\u65e5 AI \u5bfc\u8bfb Agent \u7684\u8bbe\u8ba1\u3001\u6bd4\u8f83\u4e0e\u4f7f\u7528\u6307\u5357", "keywords": "AI\uff0c\u6bcf\u65e5\u5bfc\u8bfb\uff0cAgent\uff0c\u672c\u5730\u6a21\u578b\uff0cOllama\uff0cllama.cpp\uff0c\u5de5\u7a0b\u5b9e\u8df5", "mainEntityOfPage": "https://wsn-star.github.io/posts/%E4%BA%94%E6%A8%A1%E5%9E%8B%E6%AF%8F%E6%97%A5ai%E5%AF%BC%E8%AF%BBagent%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%AF%94%E8%BE%83%E4%B8%8E%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/"}</script><link rel="stylesheet" href="/assets/css/xianxia.css">
+<link rel="stylesheet" href="/assets/css/blog.css">
+<script>document.documentElement.dataset.theme = localStorage.getItem('xianxia-theme') || 'light';
+window.BLOG_ROOT = "";</script>
+</head>
+<body class="xianxia">
+<svg class="deco-svg" aria-hidden="true"><defs>
+  <symbol id="cloud-symbol" viewBox="0 0 48 16">
+    <path d="M24 2c-3.2 0-5.8 2-6.9 4.8C13.9 6.2 11 8.4 11 11.2 11 14 13.4 16 16.4 16h15.2c3 0 5.4-2 5.4-4.8 0-2.8-2.9-5-6.1-5.2C29.8 3.4 27.2 2 24 2z" fill="currentColor" opacity=".55"/>
+    <circle cx="38" cy="6" r="4.5" fill="currentColor" opacity=".3"/>
+    <circle cx="8" cy="10" r="3" fill="currentColor" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <nav class="nav-bar" aria-label="主导航">
+    <a class="brand" href="/">青云志</a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="site-menu" aria-label="打开菜单">☰</button>
+    <ul class="site-menu" id="site-menu">
+      <li><a href="/">首页</a></li>
+      <li><a href="/archives/">归档</a></li>
+      <li><a href="/tags/">标签</a></li>
+<li><a href="/关于/">关于</a></li>      <li><a href="/rss.xml">订阅</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button id="search-open" class="icon-btn" aria-label="搜索" aria-haspopup="dialog">🔍</button>
+      <button id="theme-toggle" class="icon-btn" aria-label="切换明暗主题" title="切换明暗">🌙</button>
+    </div>
+  </nav>
+</header>
+<main id="main" class="container">
+<article class="post">
+  <header class="post-head">
+    <p class="post-route"><a href="/">首页</a> › <a href="/tags/">标签</a> › <a href="/archives/">归档</a></p>
+    <h1 class="post-title">五模型每日 AI 导读 Agent 的设计、比较与使用指南</h1>
+    <div class="post-meta">
+      <time datetime="2026-09-19">2026年09月19日</time>
+      <span>约 6 分钟</span>
+<span>无名散修</span>    </div>
+    <ul class="tag-list" aria-label="标签">
+<li><a class="tag" href="/tags/ai/">AI</a></li><li><a class="tag" href="/tags/每日导读/">每日导读</a></li><li><a class="tag" href="/tags/agent/">Agent</a></li><li><a class="tag" href="/tags/本地模型/">本地模型</a></li><li><a class="tag" href="/tags/ollama/">Ollama</a></li><li><a class="tag" href="/tags/llamacpp/">llama.cpp</a></li><li><a class="tag" href="/tags/工程实践/">工程实践</a></li>    </ul>
+  </header>
+  <div class="post-layout">
+    <div class="post-body prose">
+      <h2 id="一背景与目标">一、背景与目标</h2>
+<p>「青云志」技术博客需要每日产出一篇 AI 导读。纯手工写成本高、易断更；直接用大模型生成又面临三个核心问题：</p>
+<ol>
+<li><strong>事实不可信</strong>——模型会编造新闻</li>
+<li><strong>链接不可信</strong>——模型会编造 URL</li>
+<li><strong>长度失控</strong>——小模型写不满、漏条、格式跑偏</li>
+</ol>
+<p>为此我们搭建了一条<strong>素材注入 + 本地模型生成 + 确定性兜底 + 质量校验</strong>的流水线，并逐步扩展到 <strong>5 个本地模型</strong>同时服务，用不同作者名区分产出，方便直接对比各模型能力。</p>
+<p>本机硬件约束：RTX 5060 8GB 显存、15.7GB 内存——9B 模型无法全量 offload 到 llama.cpp，但 Ollama 能做到接近全量 GPU。这一差异直接决定了双后端的设计。</p>
+<h2 id="二架构总览">二、架构总览</h2>
+<div class="codehilite"><pre><span></span><code>素材层        scripts/news_input.json（当天新闻 + 最佳博文/视频，web_search 注入）
+               ↓ 结构校验（畸形即退出）
+生成层        本地模型 × 5（两个后端：llama-cli / Ollama）
+               ↓ 模型输出
+兜底层        确定性修复（补漏新闻 / 保真推荐小节 / 归一收尾与标题）
+               ↓
+校验层        硬校验 × 5（不过带修正提示重试，最多 3 次）
+               ↓
+产出层        content/posts/&lt;日期&gt;-每日AI导读[-N].md → build → deploy → GitHub Pages
+</code></pre></div>
+
+<p>五个入口脚本共用同一份核心逻辑（<code>scripts/daily_ai_agent.py</code>），各自只是注入不同参数：</p>
+<table>
+<thead>
+<tr>
+<th>入口</th>
+<th>模型</th>
+<th>后端</th>
+<th>作者名</th>
+<th>文件名后缀</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>daily_ai_agent.py</code></td>
+<td>qwen2.5-coder-7b</td>
+<td>llama-cli</td>
+<td>无名散修</td>
+<td>无</td>
+</tr>
+<tr>
+<td><code>daily_ai_agent2.py</code></td>
+<td>Qwen3.5-9B-Revised</td>
+<td>llama-cli</td>
+<td>青云·九章</td>
+<td><code>-2</code></td>
+</tr>
+<tr>
+<td><code>daily_ai_agent3.py</code></td>
+<td>Qwen3.5-9B-Claude-Opus-Distilled</td>
+<td>llama-cli</td>
+<td>三剑客</td>
+<td><code>-3</code></td>
+</tr>
+<tr>
+<td><code>daily_ai_agent4.py</code></td>
+<td>qwen2.5:7b（Ollama）</td>
+<td>Ollama</td>
+<td>Ollama</td>
+<td><code>-4</code></td>
+</tr>
+<tr>
+<td><code>daily_ai_agent5.py</code></td>
+<td>qwen-distill-q4:latest（Ollama）</td>
+<td>Ollama</td>
+<td>Oqwen</td>
+<td><code>-5</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="三核心设计原理">三、核心设计原理</h2>
+<h3 id="31-素材注入模型只写作">3.1 素材注入，模型只写作</h3>
+<p>脚本<strong>不联网、不负责提供事实</strong>。当天新闻、最佳博文、最佳视频由调用方用 web_search 抓取后写入 <code>news_input.json</code>，模型只负责把素材润色成文章。这是"事实可信"的根本保证——模型没有机会编造。</p>
+<h3 id="32-链接绝不信任模型">3.2 链接绝不信任模型</h3>
+<p>推荐小节（今日AI博文推荐 / 今日AI视频推荐）的标题与 URL <strong>一律以注入素材为准</strong>，由脚本 <code>best_section()</code> 精确保真构造。模型输出里的任何链接都不采信，因为小模型编造 URL 的风险不可接受。</p>
+<h3 id="33-确定性兜底质量下限不靠模型自觉">3.3 确定性兜底（质量下限不靠模型自觉）</h3>
+<p>小模型能力有限，脚本用四个确定性函数保证产出结构：</p>
+<ul>
+<li><code>complete_missing_news()</code>：模型漏写的新闻以「其他要闻」小节补进正文——<strong>10 条新闻一条不漏</strong></li>
+<li><code>enforce_best_sections()</code>：推荐小节保真覆写，素材为空则跳过</li>
+<li><code>normalize_summary_title()</code>：收尾小节标题归一（裸文本 <code>今日小结</code>、<code>今日小结：正文</code> 同行等变体统一为 <code>## 今日小结</code>）</li>
+<li><code>normalize_title()</code>：front matter 标题冒号格式归一（全角 <code>：</code>/空格 → 半角无空格）</li>
+</ul>
+<h3 id="34-质量校验闭环">3.4 质量校验闭环</h3>
+<p><strong>硬校验</strong>（不过 → 带修正提示重试，最多 3 次）：front matter 完整、date 当天、小节标题不重复、新闻逐条覆盖（独有专名判定）、推荐链接齐全。</p>
+<p><strong>软校验</strong>（记日志不阻断）：字数过短、缺收尾小节。</p>
+<p>关键词判定算法：优先英数专名（模型名/版本号），专名不足补中文片段，过滤概念词与高频中文词，无法判定的显式告警。</p>
+<h3 id="35-单后端约束">3.5 单后端约束</h3>
+<p><code>--backend</code> 二选一（<code>llama</code> / <code>ollama</code>），<strong>一次运行只允许一种后端</strong>。llama-cli 与 Ollama 的模型、资源管理方式不同，并行只会互相干扰。</p>
+<h3 id="36-双后端的本质差异续写-vs-对话">3.6 双后端的本质差异：续写 vs 对话</h3>
+<p>这是踩坑换来的关键认知：</p>
+<table>
+<thead>
+<tr>
+<th>后端</th>
+<th>调用方式</th>
+<th>模型行为</th>
+<th>需要的技巧</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>llama-cli</td>
+<td><code>-p &lt;prompt&gt;</code> 纯续写</td>
+<td>把 prompt 当"接着写"的上下文 → 直接产出 Markdown</td>
+<td>无需额外处理</td>
+</tr>
+<tr>
+<td>Ollama /api/chat</td>
+<td>对话消息</td>
+<td>倾向"回应对话" → 把指令当"待分析输入"</td>
+<td><strong>system 消息声明"直接输出文章"</strong></td>
+</tr>
+</tbody>
+</table>
+<p>实测：llama3 基座模型无论走 chat 还是 generate，都会把写作指令当输入分析（"It seems like you're using Markdown…"），<strong>无法胜任格式任务</strong>；qwen2.5:7b 指令版 + system 消息则稳定遵循。选型时"指令/续写调优模型"远比"聊天基座模型"适合格式生成。</p>
+<h3 id="37-gpu-策略llama-cli-与-ollama-的显眼差距">3.7 GPU 策略：llama-cli 与 Ollama 的显眼差距</h3>
+<p>本机 8GB 显存下实测：</p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>llama-cli（9B, <code>-ngl 12</code>）</th>
+<th>Ollama（9B 自动管理）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>显存占用</td>
+<td>7224 MiB</td>
+<td>7020 MiB</td>
+</tr>
+<tr>
+<td>GPU 利用率峰值</td>
+<td>~19%</td>
+<td><strong>94%</strong></td>
+</tr>
+<tr>
+<td>生成速度</td>
+<td>~68s（完整导读）</td>
+<td>~20s / 43 tok/s</td>
+</tr>
+</tbody>
+</table>
+<p><strong>结论</strong>：llama-cli 的 <code>-ngl 12</code> 是它自己的层数上限（<code>-ngl 14</code> 临界、<code>-ngl 16</code> OOM），Ollama 内部做了更聪明的显存管理，能把 9B 模型几乎全量塞进 GPU。<strong>新模型优先走 Ollama 后端</strong>，无需手动 <code>-ngl</code> 调优。</p>
+<h3 id="38-风格契约">3.8 风格契约</h3>
+<p>站点外观保持仙侠风（品牌文案、配色），<strong>博文标题与正文一律正式技术风</strong>——导读标题如 <code>每日 AI 导读:2026-09-18</code>，禁止文学化/武侠化表达。</p>
+<h2 id="四五模型逐一详解">四、五模型逐一详解</h2>
+<h3 id="41-qwen25-coder-7b无名散修流水线元老">4.1 qwen2.5-coder-7b（无名散修）——流水线元老</h3>
+<ul>
+<li>llama-cli 纯 CPU（<code>-ngl 0</code>），约 50-90s/篇</li>
+<li>首个验证可用的模型，奠定了"续写式 prompt 能稳定出 front matter"的基线</li>
+<li>特点：逐条罗列新闻，主题小节相对朴素</li>
+</ul>
+<h3 id="42-qwen35-9b-revised青云九章首个-9b">4.2 Qwen3.5-9B-Revised（青云·九章）——首个 9B</h3>
+<ul>
+<li>llama-cli，<code>-rea off -ngl 12</code>，约 68-100s/篇</li>
+<li><strong>关键发现</strong>：Qwen3.5-9B 系列默认输出 <code>[Start thinking]</code> 思考块挤占正文 → 必须 <code>-rea off</code></li>
+<li>特点：主题归类别更清晰，能归纳"综合小节"，产出接近综述而非要闻列表</li>
+</ul>
+<h3 id="43-qwen35-9b-claude-opus-distilled三剑客推理蒸馏版">4.3 Qwen3.5-9B-Claude-Opus-Distilled（三剑客）——推理蒸馏版</h3>
+<ul>
+<li>llama-cli，<code>-rea off -ngl 12</code>，约 2min/篇</li>
+<li>名字含义：结合 Qwen + Claude + Opus 蒸馏优点</li>
+<li>特点：内容密度高，能把多条模型新闻整合进「能力演进」小节并注明 SOTA，表达最紧凑</li>
+</ul>
+<h3 id="44-qwen257b-via-ollamaollama首个-ollama-后端">4.4 qwen2.5:7b via Ollama（Ollama）——首个 Ollama 后端</h3>
+<ul>
+<li>Ollama /api/chat + system 消息，约 17-25s/篇，GPU 利用率 ~94%</li>
+<li>验证了"Ollama 全 GPU + system 消息"这套组合的可行性</li>
+<li>特点：速度快一个量级，格式遵循稳定</li>
+</ul>
+<h3 id="45-qwen-distill-q4latest-via-ollamaoqwen9b-蒸馏最快">4.5 qwen-distill-q4:latest via Ollama（Oqwen）——9B 蒸馏最快</h3>
+<ul>
+<li>Ollama，约 20s/篇，一次通过硬校验</li>
+<li>9B 蒸馏版在 Ollama 全 GPU 下兼顾质量与速度</li>
+</ul>
+<h2 id="五实测性能对比">五、实测性能对比</h2>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>后端</th>
+<th>作者</th>
+<th>完整导读用时</th>
+<th>GPU 利用率</th>
+<th>硬校验</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>qwen2.5-coder-7b</td>
+<td>llama-cli</td>
+<td>无名散修</td>
+<td>~50-90s</td>
+<td>~5%</td>
+<td>通过</td>
+</tr>
+<tr>
+<td>Qwen3.5-9B-Revised</td>
+<td>llama-cli</td>
+<td>青云·九章</td>
+<td>~68-100s</td>
+<td>~19%</td>
+<td>通过</td>
+</tr>
+<tr>
+<td>Claude-Opus 蒸馏</td>
+<td>llama-cli</td>
+<td>三剑客</td>
+<td>~2min</td>
+<td>~19%</td>
+<td>通过</td>
+</tr>
+<tr>
+<td>qwen2.5:7b</td>
+<td>Ollama</td>
+<td>Ollama</td>
+<td>~17-25s</td>
+<td>~94%</td>
+<td>通过</td>
+</tr>
+<tr>
+<td>qwen-distill-q4</td>
+<td>Ollama</td>
+<td>Oqwen</td>
+<td>~20s</td>
+<td>~94%</td>
+<td>通过</td>
+</tr>
+</tbody>
+</table>
+<p>结构契约全部统一：<code>front matter → 主题小节 → [其他要闻·如有] → 今日AI博文推荐 → 今日AI视频推荐 → ## 今日小结</code>。</p>
+<h2 id="六使用指南">六、使用指南</h2>
+<h3 id="61-前置条件">6.1 前置条件</h3>
+<ul>
+<li>Python 3.12（conda env <code>ai-agent</code>）</li>
+<li>llama-cli：<code>C:\llama\llama-cli.exe</code> + GGUF 模型</li>
+<li>Ollama：服务运行中（<code>ollama serve</code>），已 pull 对应模型</li>
+</ul>
+<h3 id="62-生成命令">6.2 生成命令</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># 素材准备：web_search 抓当天新闻/博文/视频 → 写入 scripts/news_input.json</span>
+
+<span class="c1"># 各模型生成（可选 --draft 只预览不写文件）</span>
+<span class="nv">PYTHONIOENCODING</span><span class="o">=</span>utf-8<span class="w"> </span><span class="nv">$PY</span><span class="w"> </span>scripts/daily_ai_agent.py<span class="w"> </span><span class="o">[</span>--draft<span class="o">]</span>
+<span class="nv">PYTHONIOENCODING</span><span class="o">=</span>utf-8<span class="w"> </span><span class="nv">$PY</span><span class="w"> </span>scripts/daily_ai_agent2.py<span class="w"> </span><span class="o">[</span>--draft<span class="o">]</span>
+<span class="nv">PYTHONIOENCODING</span><span class="o">=</span>utf-8<span class="w"> </span><span class="nv">$PY</span><span class="w"> </span>scripts/daily_ai_agent3.py<span class="w"> </span><span class="o">[</span>--draft<span class="o">]</span>
+<span class="nv">PYTHONIOENCODING</span><span class="o">=</span>utf-8<span class="w"> </span><span class="nv">$PY</span><span class="w"> </span>scripts/daily_ai_agent4.py<span class="w"> </span><span class="o">[</span>--draft<span class="o">]</span>
+<span class="nv">PYTHONIOENCODING</span><span class="o">=</span>utf-8<span class="w"> </span><span class="nv">$PY</span><span class="w"> </span>scripts/daily_ai_agent5.py<span class="w"> </span><span class="o">[</span>--draft<span class="o">]</span>
+</code></pre></div>
+
+<h3 id="63-发布">6.3 发布</h3>
+<div class="codehilite"><pre><span></span><code>bash<span class="w"> </span>deploy.sh<span class="w"> </span><span class="s2">"内容: 每日AI导读 &lt;日期&gt;"</span>
+</code></pre></div>
+
+<h3 id="64-故障排查速查">6.4 故障排查速查</h3>
+<table>
+<thead>
+<tr>
+<th>现象</th>
+<th>原因</th>
+<th>处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>缺 front matter（3 稿失败）</td>
+<td>推理模型输出思考块</td>
+<td>llama-cli 加 <code>-rea off</code>；Ollama 用 system 消息</td>
+</tr>
+<tr>
+<td>模型把指令当输入回应</td>
+<td>聊天基座模型</td>
+<td>换指令版（qwen2.5:7b），加 system 消息</td>
+</tr>
+<tr>
+<td><code>--llama-args=-rea,off</code> 报错</td>
+<td>argparse 把 <code>-rea</code> 当选项</td>
+<td>用等号形式传值</td>
+</tr>
+<tr>
+<td>9B OOM</td>
+<td>8GB 显存限制</td>
+<td>llama-cli <code>-ngl 12</code>；或改用 Ollama 后端</td>
+</tr>
+<tr>
+<td>Ollama 连接拒绝</td>
+<td>服务未运行</td>
+<td><code>ollama serve</code> 并保持窗口</td>
+</tr>
+</tbody>
+</table>
+<h2 id="七选型建议">七、选型建议</h2>
+<ul>
+<li><strong>追求速度</strong>：Ollama 后端（agent4/5），20 秒出稿</li>
+<li><strong>追求质量</strong>：Claude-Opus 蒸馏（agent3）内容最紧凑；Qwen3.5-9B-Revised（agent2）综述感强</li>
+<li><strong>稳定性优先</strong>：qwen2.5:7b（agent4）格式遵循最稳</li>
+<li><strong>新模型优先走 Ollama</strong>：自动全 GPU，免去 <code>-ngl</code> 调优</li>
+<li><strong>避免</strong>：聊天基座模型（如 llama3）做格式生成任务</li>
+</ul>
+<h2 id="八结语">八、结语</h2>
+<p>这套流水线的核心经验可以一句话概括：<strong>把"事实"与"格式"交给确定性代码，把"表达"交给模型</strong>。素材注入保证事实可信，确定性兜底保证结构统一，质量校验保证不产出坏稿——模型只负责它擅长的润色。五模型并存后，每天可以一次生成五篇导读，直接对比各家能力差异，也方便逐步淘汰表现差的模型。</p>
+<p>源码与全部文档在 <code>D:\prj\evox-agent\website_generator</code>（<code>docs/</code> 有详细设计说明书与使用手册）。</p>
+    </div>
+    <aside class="toc" aria-label="章节目录">
+      <p class="toc-title">卷目</p>
+      <ol>
+        <li class="toc-l2"><a href="#一背景与目标">一、背景与目标</a></li>
+        <li class="toc-l2"><a href="#二架构总览">二、架构总览</a></li>
+        <li class="toc-l2"><a href="#三核心设计原理">三、核心设计原理</a></li>
+        <li class="toc-l3"><a href="#31-素材注入模型只写作">3.1 素材注入，模型只写作</a></li>
+        <li class="toc-l3"><a href="#32-链接绝不信任模型">3.2 链接绝不信任模型</a></li>
+        <li class="toc-l3"><a href="#33-确定性兜底质量下限不靠模型自觉">3.3 确定性兜底（质量下限不靠模型自觉）</a></li>
+        <li class="toc-l3"><a href="#34-质量校验闭环">3.4 质量校验闭环</a></li>
+        <li class="toc-l3"><a href="#35-单后端约束">3.5 单后端约束</a></li>
+        <li class="toc-l3"><a href="#36-双后端的本质差异续写-vs-对话">3.6 双后端的本质差异：续写 vs 对话</a></li>
+        <li class="toc-l3"><a href="#37-gpu-策略llama-cli-与-ollama-的显眼差距">3.7 GPU 策略：llama-cli 与 Ollama 的显眼差距</a></li>
+        <li class="toc-l3"><a href="#38-风格契约">3.8 风格契约</a></li>
+        <li class="toc-l2"><a href="#四五模型逐一详解">四、五模型逐一详解</a></li>
+        <li class="toc-l3"><a href="#41-qwen25-coder-7b无名散修流水线元老">4.1 qwen2.5-coder-7b（无名散修）——流水线元老</a></li>
+        <li class="toc-l3"><a href="#42-qwen35-9b-revised青云九章首个-9b">4.2 Qwen3.5-9B-Revised（青云·九章）——首个 9B</a></li>
+        <li class="toc-l3"><a href="#43-qwen35-9b-claude-opus-distilled三剑客推理蒸馏版">4.3 Qwen3.5-9B-Claude-Opus-Distilled（三剑客）——推理蒸馏版</a></li>
+        <li class="toc-l3"><a href="#44-qwen257b-via-ollamaollama首个-ollama-后端">4.4 qwen2.5:7b via Ollama（Ollama）——首个 Ollama 后端</a></li>
+        <li class="toc-l3"><a href="#45-qwen-distill-q4latest-via-ollamaoqwen9b-蒸馏最快">4.5 qwen-distill-q4:latest via Ollama（Oqwen）——9B 蒸馏最快</a></li>
+        <li class="toc-l2"><a href="#五实测性能对比">五、实测性能对比</a></li>
+        <li class="toc-l2"><a href="#六使用指南">六、使用指南</a></li>
+        <li class="toc-l3"><a href="#61-前置条件">6.1 前置条件</a></li>
+        <li class="toc-l3"><a href="#62-生成命令">6.2 生成命令</a></li>
+        <li class="toc-l3"><a href="#63-发布">6.3 发布</a></li>
+        <li class="toc-l3"><a href="#64-故障排查速查">6.4 故障排查速查</a></li>
+        <li class="toc-l2"><a href="#七选型建议">七、选型建议</a></li>
+        <li class="toc-l2"><a href="#八结语">八、结语</a></li>
+      </ol>
+    </aside>
+  </div>
+  <section class="related" aria-label="相关文章">
+    <h2>他山之石 · 相关文章</h2>
+    <div class="related-list">
+      <a class="related-card" href="/posts/每日ai导读-5/">
+        <span class="related-date">2026-09-18</span>
+        <span class="related-title">每日 AI 导读:2026-09-18</span>
+      </a>
+      <a class="related-card" href="/posts/每日ai导读-4/">
+        <span class="related-date">2026-09-18</span>
+        <span class="related-title">每日 AI 导读:2026-09-18</span>
+      </a>
+      <a class="related-card" href="/posts/每日ai导读-3/">
+        <span class="related-date">2026-09-18</span>
+        <span class="related-title">每日 AI 导读:2026-09-18</span>
+      </a>
+    </div>
+  </section>
+  <nav class="post-nav" aria-label="上一篇/下一篇">
+<a class="post-nav-next" href="/posts/每日ai导读-5/">每日 AI 导读:2026-09-18 →</a>  </nav>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="cloud-divider" aria-hidden="true">
+    <svg viewBox="0 0 480 18" role="presentation"><use href="#cloud-symbol" x="0"/><use href="#cloud-symbol" x="144"/><use href="#cloud-symbol" x="288"/><use href="#cloud-symbol" x="432" transform="scale(-1,1) translate(-480,0)"/></svg>
+  </div>
+  <p class="footer-line">剑气纵横三万里，一剑光寒十九州。</p>
+  <p class="footer-meta">© 2026 无名散修 · 由 post-generator 铸造 · <a href="/atom.xml">Atom</a> / <a href="/rss.xml">RSS</a></p>
+</footer>
+<div id="search-panel" class="search-panel" hidden aria-hidden="true">
+  <div class="search-box" role="dialog" aria-modal="true" aria-labelledby="search-title">
+    <h2 id="search-title" class="visually-hidden">站内搜索</h2>
+    <div class="search-field">
+      <label class="visually-hidden" for="search-input">搜索关键词</label>
+      <input id="search-input" type="search" placeholder="搜剑诀、丹方、见闻…" autocomplete="off">
+      <button id="search-close" class="icon-btn" aria-label="关闭搜索">✕</button>
+    </div>
+    <p id="search-status" class="search-status" role="status"></p>
+    <ul id="search-results" class="search-results"></ul>
+  </div>
+</div>
+<script src="/assets/search-index.js" defer></script>
+<script src="/assets/js/theme.js" defer></script>
+<script src="/assets/js/search.js" defer></script>
+<script src="/assets/js/main.js" defer></script>
+</body>
+</html>
